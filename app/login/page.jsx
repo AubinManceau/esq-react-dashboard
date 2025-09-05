@@ -2,36 +2,28 @@
 
 import { useState } from "react";
 import { login } from "../utils/auth";
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [forgotPassword, setForgotPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (!forgotPassword) {
             const res = await login(email, password);
             if (res) {
-                redirect("/");
+                redirect("/admin");
             } else {
                 setError("Email ou mot de passe incorrect.");
             }
+            setLoading(false);
         } else {
-            const res = await fetch("/auth/forgot-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            });
-            if (res) {
-
-            } else {
-                setError("Une erreur est survenue.");
-            }
+            setLoading(false);
         }
     };
     return (
@@ -46,13 +38,13 @@ export default function Login() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col relative">
                                     <label htmlFor="email">Email</label>
-                                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} />
+                                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} disabled={loading} />
                                 </div>
                                 <div className="flex flex-col relative">
                                     <label htmlFor="password">Mot de passe</label>
-                                    <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} />
+                                    <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} disabled={loading} />
                                 </div>
-                                <button className="forgot-password" onClick={() => setForgotPassword(true)}>Mot de passe oublié ?</button>
+                                <p className="forgot-password" onClick={() => setForgotPassword(true)}>Mot de passe oublié ?</p>
                                 {error && <p className="text-red-500">{error}</p>}
                             </div>
                         </>
@@ -62,14 +54,23 @@ export default function Login() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col relative">
                                     <label htmlFor="email">Email</label>
-                                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} />
+                                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} onFocus={(e) => e.target.parentNode.classList.add("focused")} onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}} disabled={loading} />
                                 </div>
-                                <button className="forgot-password" onClick={() => setForgotPassword(false)}>Se connecter</button>
+                                <p className="forgot-password" onClick={() => setForgotPassword(false)}>Se connecter</p>
                                 {error && <p className="text-red-500">{error}</p>}
                             </div>
                         </>
                     )}
-                    <button type="submit" className="btn">{forgotPassword ? "Réinitialiser" : "Se connecter"}</button>
+                    <button
+                        type="submit"
+                        className="btn flex items-center justify-center gap-2"
+                        disabled={loading}
+                    >
+                        {loading && (
+                            <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        )}
+                        {loading ? "" : (forgotPassword ? "Réinitialiser" : "Se connecter")}
+                    </button>
                 </form>
             </div>
         </div>

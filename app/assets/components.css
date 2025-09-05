@@ -1,5 +1,5 @@
 h1 {
-  @apply font-default-medium text-[32px]/[100%] lg:text-[52px]/[100%];
+  @apply font-default-medium text-[30px]/[100%] lg:text-[52px]/[100%];
 
   & span {
     @apply font-default-black text-orange;

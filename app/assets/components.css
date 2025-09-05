@@ -1,0 +1,14 @@
+h1 {
+  @apply font-default-medium text-[32px]/[100%] lg:text-[52px]/[100%];
+
+  & span {
+    @apply font-default-black text-orange;
+  }
+}
+h2 {
+  @apply font-default-medium text-[24px]/[100%] lg:text-[32px]/[100%] font-semibold mb-4;
+}
+
+.btn {
+  @apply font-default-semibold bg-orange text-[18px] text-white p-3 rounded-[5px] hover:bg-orange2 transition cursor-pointer;
+}

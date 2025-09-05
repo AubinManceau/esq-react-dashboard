@@ -1,21 +1,24 @@
 @import "tailwindcss";
+@import "./assets/form.css";
+@import "./assets/components.css";
+@import "./assets/fonts.css";
 
-h1 {
-  @apply text-4xl;
-}
-h2 {
-  @apply text-2xl font-semibold mb-4;
+@theme {
+  --font-default: 'Montserrat', sans-serif;
+  --font-default-thin: 'Montserrat Thin', sans-serif;
+  --font-default-extralight: 'Montserrat ExtraLight', sans-serif;
+  --font-default-light: 'Montserrat Light', sans-serif;
+  --font-default-medium: 'Montserrat Medium', sans-serif;
+  --font-default-semibold: 'Montserrat SemiBold', sans-serif;
+  --font-default-bold: 'Montserrat Bold', sans-serif;
+  --font-default-black: 'Montserrat Black', sans-serif;
+
+  --color-bleu: #000066;
+  --color-orange: #FC6E11;
+  --color-orange2: #ee6307;
 }
 
-form {
-  & input {
-    @apply border-white border-1 p-2 rounded-[5px] focus:outline-none max-w-[350px] text-white;
-  }
-  & label {
-    @apply absolute p-2 text-white;
-  }
-}
-
-.btn {
-  @apply bg-red-500 text-white p-2 rounded-[5px] hover:bg-red-600 transition cursor-pointer;
+html, body {
+  @apply font-default;
+  background-color: #ee6307;
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react"; // icônes hamburger et close
+import { Menu, X, LogOut, House, Users, Newspaper, Scroll, Shirt } from "lucide-react";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -16,55 +16,60 @@ export default function Sidebar() {
         <div className="fixed inset-0 bg-black opacity-50 z-40 lg:hidden" onClick={() => setOpen(false)} />
       )}
 
-      <aside className={`fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white py-8 px-2 flex flex-col justify-between transform transition-transform duration-300 z-50 ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static lg:block`}>
-        <button onClick={() => setOpen(false)} className="lg:hidden absolute top-4 right-4 text-white">
+      <aside className={`fixed top-0 left-0 h-screen w-64 bg-white py-8 px-2 flex flex-col justify-between transform transition-transform duration-300 z-50 ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static`}>
+        <button onClick={() => setOpen(false)} className="lg:hidden absolute top-4 right-4">
           <X size={24} />
         </button>
         <nav>
-          <h2 className="text-2xl font-bold mb-10 text-center">ESQ</h2>
+          <h2 className="text-2xl font-bold !mb-8 text-center">ESQ</h2>
           <ul className="space-y-4">
             <li>
               <Link
                 href="/admin"
-                className="block py-2 px-2 rounded hover:bg-gray-700"
+                className="flex gap-2 items-center py-2 px-2 rounded hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
+                <House />
                 Tableau de bord
               </Link>
             </li>
             <li>
               <Link
                 href="/admin/utilisateurs"
-                className="block py-2 px-2 rounded hover:bg-gray-700"
+                className="flex gap-2 items-center py-2 px-2 rounded hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
+                <Users />
                 Utilisateurs
               </Link>
             </li>
             <li>
               <Link
                 href="/admin/articles"
-                className="block py-2 px-2 rounded hover:bg-gray-700"
+                className="flex gap-2 items-center py-2 px-2 rounded hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
+                <Newspaper />
                 Articles
               </Link>
             </li>
             <li>
               <Link
                 href="/admin/equipes"
-                className="block py-2 px-2 rounded hover:bg-gray-700"
+                className="flex gap-2 items-center py-2 px-2 rounded hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
+                <Shirt />
                 Équipes
               </Link>
             </li>
             <li>
               <Link
                 href="/admin/convocations"
-                className="block py-2 px-2 rounded hover:bg-gray-700"
+                className="flex gap-2 items-center py-2 px-2 rounded hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
+                <Scroll />
                 Convocations
               </Link>
             </li>
@@ -72,8 +77,12 @@ export default function Sidebar() {
         </nav>
 
         <div>
-          <button className="mt-10 w-full py-2 px-4 bg-red-600 rounded hover:bg-red-700">
-            Logout
+          <button className="flex items-center gap-6 bg-gray-100 rounded-md py-2 px-6 w-full cursor-pointer">
+            <LogOut />
+            <div className="flex flex-col text-left">
+              <p>Aubin Manceau</p>
+              <span className="text-sm">Se déconnecter</span>
+            </div>
           </button>
         </div>
       </aside>

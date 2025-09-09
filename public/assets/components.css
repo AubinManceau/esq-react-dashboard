@@ -23,7 +23,19 @@ h4, .h4 {
 }
 
 .nav-link {
-  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 rounded-[5px] hover:bg-orange/30;
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 w-full hover:bg-orange/30;
+
+  &.active {
+    @apply bg-orange/30;
+  }
+}
+
+.sub-nav-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] py-2 px-3 w-full hover:bg-orange/30;
+
+  &.active {
+    @apply bg-orange/30;
+  }
 }
 
 .logout {

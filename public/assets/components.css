@@ -1,12 +1,18 @@
-h1 {
+h1, .h1 {
   @apply font-default-medium text-[30px]/[100%] lg:text-[52px]/[100%];
 
   & span {
     @apply font-default-black text-orange;
   }
 }
-h2 {
-  @apply font-default-medium text-[24px]/[100%] lg:text-[32px]/[100%] font-semibold mb-4;
+h2, .h2 {
+  @apply font-default-medium text-[24px]/[100%] lg:text-[28px]/[100%] font-semibold mb-4;
+}
+h3, .h3 {
+  @apply font-default-medium text-[20px]/[100%] lg:text-[20px]/[100%];
+}
+h4, .h4 {
+  @apply font-default-semibold text-[16px]/[100%] lg:text-[16px]/[100%];
 }
 .error-message {
   @apply font-default text-red-500 text-[13px];
@@ -14,4 +20,12 @@ h2 {
 
 .btn {
   @apply font-default-semibold bg-orange text-[18px] text-white p-3 rounded-[5px] hover:bg-orange2 transition cursor-pointer;
+}
+
+.nav-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 rounded-[5px] hover:bg-orange/30;
+}
+
+.logout {
+  @apply font-default-light text-[13px]/[115%];
 }

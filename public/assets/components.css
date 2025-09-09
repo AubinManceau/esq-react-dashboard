@@ -29,7 +29,6 @@ h4, .h4 {
     @apply bg-orange/30;
   }
 }
-
 .sub-nav-link {
   @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] py-2 px-3 w-full hover:bg-orange/30;
 
@@ -37,7 +36,10 @@ h4, .h4 {
     @apply bg-orange/30;
   }
 }
-
 .logout {
   @apply font-default-light text-[13px]/[115%];
+}
+
+.navbar-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] text-white;
 }

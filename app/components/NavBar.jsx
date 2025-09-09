@@ -1,135 +1,33 @@
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Facebook } from "lucide-react";
+import Image from "next/image";
+import { AtSign, Instagram, Facebook } from "lucide-react";
 
 export default function NavBar() {
-  const [openMenu, setOpenMenu] = useState(null);
-
-  const toggleMenu = (menu) => {
-    setOpenMenu(openMenu === menu ? null : menu);
-  };
-
   return (
-    <header className="bg-bleu flex items-center justify-between w-full px-12 py-3 relative">
-      <Image
-        src="/logo.png"
-        alt="Logo"
-        width={50}
-        height={50}
-        className="bg-bleu"
-      />
-      <nav>
-        <ul className="flex gap-x-10 relative">
-          <li>
-            <Link href="/" className="text-white hover:underline">
-              Accueil
-            </Link>
-          </li>
-
-          {/* L'ESQ avec sous-menu */}
-          <li className="relative">
-            <button
-              onClick={() => toggleMenu("esq")}
-              className="text-white hover:underline"
-            >
-              L&apos;ESQ
-            </button>
-            {openMenu === "esq" && (
-              <div className="absolute left-0 -bottom-[calc(100%-12px)] w-48 bg-white text-black shadow-lg rounded-md">
-                <ul className="flex flex-col">
-                  <li>
-                    <Link
-                      href="/about/histoire"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      Histoire
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/about/staff"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      Staff
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </li>
-
-          {/* Nos équipes avec sous-menu */}
-          <li className="relative">
-            <button
-              onClick={() => toggleMenu("equipes")}
-              className="text-white hover:underline"
-            >
-              Nos équipes
-            </button>
-            {openMenu === "equipes" && (
-              <div className="absolute left-0 -bottom-[calc(100%-12px)] w-60 bg-white text-black shadow-lg rounded-md">
-                <ul className="flex flex-col">
-                  <li>
-                    <Link
-                      href="/equipes/seniors"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      Seniors
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/equipes/u18"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      U18
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/equipes/u15"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      U15
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </li>
-
-          <li>
-            <Link href="/partenaires" className="text-white hover:underline">
-              Partenaires
-            </Link>
-          </li>
-          <li>
-            <Link href="/contact" className="text-white hover:underline">
-              Contact
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      <div className="flex gap-x-4">
-        <li>
-          <Link href="/boutique" className="btn">
-            Boutique
-          </Link>
-        </li>
-        <li>
-          <Link href="/insta" className="text-white hover:underline">
-            <Instagram />
-          </Link>
-        </li>
-        <li>
-          <Link href="/facebook" className="text-white hover:underline">
-            <Facebook />
-          </Link>
-        </li>
+    <header className="bg-bleu flex flex-col justify-between w-full px-36 py-4 gap-8">
+      <div className="flex justify-between items-center">
+        <a href="mailto:contact@esq.com" className="flex items-center gap-2 text-white">
+          <AtSign size={20} />
+          <span>contact@esq.com</span>
+        </a>
+        <Image src="/logo.png" alt="Logo" width={80} height={80} />
+        <div className="flex items-center gap-8">
+          <Link href="#" className="btn">Boutique</Link>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+            <Facebook size={20} color="white" />
+          </a>
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+            <Instagram size={20} color="white" />
+          </a>
+        </div>
       </div>
+      <nav className="flex justify-center items-center gap-8">
+        <Link href="/admin" className="navbar-link">Accueil</Link>
+        <Link href="/about" className="navbar-link">L'ESQ</Link>
+        <Link href="/contact" className="navbar-link">Nos équipes</Link>
+        <Link href="/services" className="navbar-link">Partenaires</Link>
+        <Link href="/blog" className="navbar-link">Contact</Link>
+      </nav>
     </header>
   );
 }

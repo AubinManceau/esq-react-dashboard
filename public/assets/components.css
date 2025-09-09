@@ -41,5 +41,9 @@ h4, .h4 {
 }
 
 .navbar-link {
-  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] text-white;
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] text-white py-4 px-4 cursor-pointer;
+}
+
+.dropdown-item {
+  @apply text-white px-3 text-left;
 }

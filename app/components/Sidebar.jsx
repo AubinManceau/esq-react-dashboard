@@ -1,20 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, LogOut, House, Users, Newspaper, Scroll, Shirt, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, House, Users, Newspaper, Scroll, Shirt, ChevronDown, FileChartColumn } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
-  const [submenuOpen, setSubmenuOpen] = useState(false);
+  const [submenuUsersOpen, setSubmenuUsersOpen] = useState(false);
+  const [submenuPresenceOpen, setSubmenuPresenceOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     if (pathname.startsWith("/admin/utilisateurs")) {
-      setSubmenuOpen(true);
+      setSubmenuUsersOpen(true);
+    } else if (pathname.startsWith("/admin/presences")) {
+      setSubmenuPresenceOpen(true);
     }
   }, [pathname]);
+
   const isActive = (href) => pathname === href;
+
   return (
     <>
       <button
@@ -44,7 +49,7 @@ export default function Sidebar() {
         </button>
         <nav>
           <div className="bg-orange py-8 mb-10">
-            <h2 className="!mb-0 pl-6 !font-default-extralight text-white">
+            <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
               Etoile Sportive <span className="font-default-medium">Quelainaise</span>
             </h2>
           </div>
@@ -53,7 +58,7 @@ export default function Sidebar() {
               <Link
                 href="/admin"
                 className={`nav-link ${isActive("/admin") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuOpen(false); }}
+                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
               >
                 <House color="#FC6E11" />
                 Tableau de bord
@@ -62,7 +67,7 @@ export default function Sidebar() {
             <div>
               <button
                 className="nav-link w-full justify-between cursor-pointer"
-                onClick={() => setSubmenuOpen(!submenuOpen)}
+                onClick={() => { setSubmenuUsersOpen(!submenuUsersOpen); setSubmenuPresenceOpen(false); }}
               >
                 <div className="flex gap-4 items-center">
                   <Users color="#FC6E11" />
@@ -72,12 +77,12 @@ export default function Sidebar() {
                   color="black"
                   strokeWidth={1}
                   className={`transition-transform duration-200 ${
-                    submenuOpen ? "rotate-180" : ""
+                    submenuUsersOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
 
-              {submenuOpen && (
+              {submenuUsersOpen && (
                 <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
                   <Link
                     href="/admin/utilisateurs/inscription"
@@ -101,17 +106,54 @@ export default function Sidebar() {
               <Link
                 href="/admin/articles"
                 className={`nav-link ${isActive("/admin/articles") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuOpen(false); }}
+                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
               >
                 <Newspaper color="#FC6E11" />
                 Articles
               </Link>
             </div>
             <div>
+              <button
+                className={'nav-link w-full justify-between cursor-pointer'}
+                onClick={() => { setSubmenuUsersOpen(false); setSubmenuPresenceOpen(!submenuPresenceOpen); }}
+              >
+                <div className="flex gap-4 items-center">
+                  <FileChartColumn color="#FC6E11" />
+                  Présences
+                </div>
+                <ChevronDown
+                  color="black"
+                  strokeWidth={1}
+                  className={`transition-transform duration-200 ${
+                    submenuPresenceOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {submenuPresenceOpen && (
+                <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
+                  <Link
+                    href="/admin/presences/graphique"
+                    className={`sub-nav-link ${isActive("/admin/presences/grahique") ? "active" : ""}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    Graphique
+                  </Link>
+                  <Link
+                    href="/admin/presences"
+                    className={`sub-nav-link ${isActive("/admin/presences") ? "active" : ""}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    Gestion
+                  </Link>
+                </div>
+              )}
+            </div>
+            <div>
               <Link
                 href="/admin/equipes"
                 className={`nav-link ${isActive("/admin/equipes") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuOpen(false); }}
+                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
               >
                 <Shirt color="#FC6E11" />
                 Équipes
@@ -121,7 +163,7 @@ export default function Sidebar() {
               <Link
                 href="/admin/convocations"
                 className={`nav-link ${isActive("/admin/convocations") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuOpen(false); }}
+                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
               >
                 <Scroll color="#FC6E11" />
                 Convocations

@@ -16,6 +16,8 @@
   --color-bleu: #000066;
   --color-orange: #FC6E11;
   --color-orange2: #ee6307;
+
+  --breakpoint-s: 500px;
 }
 
 html, body {

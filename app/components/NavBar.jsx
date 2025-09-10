@@ -12,7 +12,7 @@ export default function NavBar() {
           <AtSign size={20} />
           <span>contact@esq.com</span>
         </a>
-        <Image src="/logo.png" alt="Logo" width={80} height={80} />
+        <Image src="/logo-texte.png" alt="Logo" width={180} height={180} />
         <div className="flex items-center gap-8">
           <Link href="#" className="btn">Boutique</Link>
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">

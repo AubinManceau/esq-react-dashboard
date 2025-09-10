@@ -23,17 +23,17 @@ h4, .h4 {
 }
 
 .nav-link {
-  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 w-full hover:bg-orange/30;
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 w-full rounded-[3px] hover:bg-orange/15;
 
   &.active {
-    @apply bg-orange/30;
+    @apply bg-orange/15;
   }
 }
 .sub-nav-link {
-  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] py-2 px-3 w-full hover:bg-orange/30;
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] py-2 px-3 w-full rounded-[3px] hover:bg-orange/15;
 
   &.active {
-    @apply bg-orange/30;
+    @apply bg-orange/15;
   }
 }
 .logout {
@@ -46,4 +46,16 @@ h4, .h4 {
 
 .dropdown-item {
   @apply text-white px-3 text-left;
+}
+
+.admin-home {
+  @apply flex flex-col h-full w-full;
+
+  & .little-card {
+    @apply shadow-md rounded-2xl p-4 h-auto w-full s:w-[47%] lg:w-[22%] xl:w-[23%] aspect-square;
+  }
+
+  & .big-card {
+    @apply text-white bg-bleu shadow-md rounded-2xl p-4 h-[300px] xl:h-[350px] w-full;
+  }
 }

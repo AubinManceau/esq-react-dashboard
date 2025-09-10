@@ -134,7 +134,7 @@ export default function Sidebar() {
                 <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
                   <Link
                     href="/admin/presences/graphique"
-                    className={`sub-nav-link ${isActive("/admin/presences/grahique") ? "active" : ""}`}
+                    className={`sub-nav-link ${isActive("/admin/presences/graphique") ? "active" : ""}`}
                     onClick={() => setOpen(false)}
                   >
                     Graphique

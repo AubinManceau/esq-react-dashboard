@@ -58,7 +58,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white flex flex-col justify-between transform transition-transform duration-300 z-50 lg:shadow-md ${
+        className={`fixed top-0 left-0 h-screen w-64 bg-white flex flex-col justify-between transform transition-transform duration-300 z-50 lg:shadow-md rounded-r-[20px] ${
           open ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static`}
       >
@@ -70,7 +70,7 @@ export default function Sidebar() {
         </button>
 
         <nav>
-          <div className="bg-orange py-8 mb-10">
+          <div className="bg-orange py-8 mb-10 rounded-tr-[20px]">
             <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
               Etoile Sportive{" "}
               <span className="font-default-medium">Quelainaise</span>
@@ -87,11 +87,11 @@ export default function Sidebar() {
                   setSubmenuPresenceOpen(false);
                 }}
               >
-                <House color="#FC6E11" />
+                <House color="black" className="icon" />
                 Tableau de bord
               </Link>
             </div>
-            <div>
+            <div className="nav-link-container">
               <button
                 className="nav-link w-full justify-between cursor-pointer"
                 onClick={() => {
@@ -100,7 +100,7 @@ export default function Sidebar() {
                 }}
               >
                 <div className="flex gap-4 items-center">
-                  <Users color="#FC6E11" />
+                  <Users color="black" className="icon" />
                   Utilisateurs
                 </div>
                 <ChevronDown
@@ -112,28 +112,26 @@ export default function Sidebar() {
                 />
               </button>
 
-              {submenuUsersOpen && (
-                <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
-                  <Link
-                    href="/admin/utilisateurs/inscription"
-                    className={`sub-nav-link ${
-                      isActive("/admin/utilisateurs/inscription") ? "active" : ""
-                    }`}
-                    onClick={() => setOpen(false)}
-                  >
-                    Inscription
-                  </Link>
-                  <Link
-                    href="/admin/utilisateurs"
-                    className={`sub-nav-link ${
-                      isActive("/admin/utilisateurs") ? "active" : ""
-                    }`}
-                    onClick={() => setOpen(false)}
-                  >
-                    Gestion
-                  </Link>
-                </div>
-              )}
+              <div className={`${submenuUsersOpen ? 'block' : 'hidden'} mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200`}>
+                <Link
+                  href="/admin/utilisateurs/inscription"
+                  className={`sub-nav-link ${
+                    isActive("/admin/utilisateurs/inscription") ? "active" : ""
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  Inscription
+                </Link>
+                <Link
+                  href="/admin/utilisateurs"
+                  className={`sub-nav-link ${
+                    isActive("/admin/utilisateurs") ? "active" : ""
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  Gestion
+                </Link>
+              </div>
             </div>
 
             <div>
@@ -146,11 +144,11 @@ export default function Sidebar() {
                   setSubmenuPresenceOpen(false);
                 }}
               >
-                <Newspaper color="#FC6E11" />
+                <Newspaper color="black" className="icon" />
                 Articles
               </Link>
             </div>
-            <div>
+            <div className="nav-link-container">
               <button
                 className="nav-link w-full justify-between cursor-pointer"
                 onClick={() => {
@@ -159,7 +157,7 @@ export default function Sidebar() {
                 }}
               >
                 <div className="flex gap-4 items-center">
-                  <FileChartColumn color="#FC6E11" />
+                  <FileChartColumn color="black" className="icon" />
                   Présences
                 </div>
                 <ChevronDown
@@ -171,28 +169,26 @@ export default function Sidebar() {
                 />
               </button>
 
-              {submenuPresenceOpen && (
-                <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
-                  <Link
-                    href="/admin/presences/graphique"
-                    className={`sub-nav-link ${
-                      isActive("/admin/presences/graphique") ? "active" : ""
-                    }`}
-                    onClick={() => setOpen(false)}
-                  >
-                    Graphique
-                  </Link>
-                  <Link
-                    href="/admin/presences"
-                    className={`sub-nav-link ${
-                      isActive("/admin/presences") ? "active" : ""
-                    }`}
-                    onClick={() => setOpen(false)}
-                  >
-                    Gestion
-                  </Link>
-                </div>
-              )}
+              <div className={`${submenuPresenceOpen ? 'block' : 'hidden'} mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200`}>
+                <Link
+                  href="/admin/presences/graphique"
+                  className={`sub-nav-link ${
+                    isActive("/admin/presences/graphique") ? "active" : ""
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  Graphique
+                </Link>
+                <Link
+                  href="/admin/presences"
+                  className={`sub-nav-link ${
+                    isActive("/admin/presences") ? "active" : ""
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  Gestion
+                </Link>
+              </div>
             </div>
             <div>
               <Link
@@ -204,7 +200,7 @@ export default function Sidebar() {
                   setSubmenuPresenceOpen(false);
                 }}
               >
-                <Shirt color="#FC6E11" />
+                <Shirt color="black" className="icon" />
                 Équipes
               </Link>
             </div>
@@ -218,7 +214,7 @@ export default function Sidebar() {
                   setSubmenuPresenceOpen(false);
                 }}
               >
-                <Scroll color="#FC6E11" />
+                <Scroll color="black" className="icon" />
                 Convocations
               </Link>
             </div>

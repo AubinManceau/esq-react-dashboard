@@ -62,12 +62,13 @@ export default function Dashboard() {
 
         <div className="flex flex-col-reverse lg:flex-row gap-4 lg:h-6/8">
           <div className="chart-card">
-            <canvas ref={chartRef}></canvas>
+            <h4>Nombre de joueurs par catégorie</h4>
+            <canvas className="lg:!max-h-[600px] !max-h-[350px]" ref={chartRef}></canvas>
           </div>
 
-          <div className="grid grid-cols-2 s:grid-cols-4 lg:flex lg:flex-col gap-2 lg:w-3/8">
+          <div className="grid grid-cols-2 s:grid-cols-4 lg:flex lg:flex-col gap-4 lg:w-3/8">
             <div className="number-card">
-              <div className="flex items-start gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
                 <div className="p-2 bg-[#6C534E] rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
@@ -78,7 +79,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
                 <div className="p-2 bg-orange rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
@@ -89,7 +90,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
                 <div className="p-2 bg-[#A67F8E] rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
@@ -100,7 +101,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
                 <div className="p-2 bg-bleu rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>

@@ -58,7 +58,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white flex flex-col justify-between transform transition-transform duration-300 z-50 lg:shadow-md rounded-r-[20px] ${
+        className={`fixed top-0 left-0 h-screen w-64 bg-white flex flex-col justify-between transform transition-transform duration-300 z-50 lg:shadow-md rounded-r-[15px] ${
           open ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static`}
       >
@@ -70,7 +70,7 @@ export default function Sidebar() {
         </button>
 
         <nav>
-          <div className="bg-orange py-8 mb-10 rounded-tr-[20px]">
+          <div className="bg-orange py-8 mb-10 rounded-tr-[15px]">
             <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
               Etoile Sportive{" "}
               <span className="font-default-medium">Quelainaise</span>

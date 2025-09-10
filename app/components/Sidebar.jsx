@@ -1,7 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, LogOut, House, Users, Newspaper, Scroll, Shirt, ChevronDown, FileChartColumn } from "lucide-react";
+import {
+  Menu,
+  X,
+  LogOut,
+  House,
+  Users,
+  Newspaper,
+  Scroll,
+  Shirt,
+  ChevronDown,
+  FileChartColumn,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
@@ -20,14 +31,24 @@ export default function Sidebar() {
 
   const isActive = (href) => pathname === href;
 
+  const getPageTitle = (path) => {
+    if (path === "/admin") return "Tableau de bord";
+    if (path.startsWith("/admin/utilisateurs")) return "Utilisateurs";
+    if (path.startsWith("/admin/articles")) return "Articles";
+    if (path.startsWith("/admin/presences")) return "Présences";
+    if (path.startsWith("/admin/equipes")) return "Équipes";
+    if (path.startsWith("/admin/convocations")) return "Convocations";
+    return "";
+  };
+
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-orange text-white rounded-md"
-      >
-        <Menu size={24} />
-      </button>
+      <div className="lg:hidden fixed top-0 left-0 w-full flex items-center justify-between bg-white px-4 py-4 z-10 shadow">
+        <button onClick={() => setOpen(true)} className="p-2 rounded-md bg-orange text-white">
+          <Menu size={24} />
+        </button>
+        <span className="">{getPageTitle(pathname)}</span>
+      </div>
 
       {open && (
         <div
@@ -47,18 +68,24 @@ export default function Sidebar() {
         >
           <X size={24} color="white" />
         </button>
+
         <nav>
           <div className="bg-orange py-8 mb-10">
             <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
-              Etoile Sportive <span className="font-default-medium">Quelainaise</span>
+              Etoile Sportive{" "}
+              <span className="font-default-medium">Quelainaise</span>
             </h2>
           </div>
-          <div className="flex flex-col gap-4 px-3">
+          <div className="flex flex-col gap-4 px-3 mt-16 lg:mt-0">
             <div>
               <Link
                 href="/admin"
                 className={`nav-link ${isActive("/admin") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
+                onClick={() => {
+                  setOpen(false);
+                  setSubmenuUsersOpen(false);
+                  setSubmenuPresenceOpen(false);
+                }}
               >
                 <House color="#FC6E11" />
                 Tableau de bord
@@ -67,7 +94,10 @@ export default function Sidebar() {
             <div>
               <button
                 className="nav-link w-full justify-between cursor-pointer"
-                onClick={() => { setSubmenuUsersOpen(!submenuUsersOpen); setSubmenuPresenceOpen(false); }}
+                onClick={() => {
+                  setSubmenuUsersOpen(!submenuUsersOpen);
+                  setSubmenuPresenceOpen(false);
+                }}
               >
                 <div className="flex gap-4 items-center">
                   <Users color="#FC6E11" />
@@ -86,14 +116,18 @@ export default function Sidebar() {
                 <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
                   <Link
                     href="/admin/utilisateurs/inscription"
-                    className={`sub-nav-link ${isActive("/admin/utilisateurs/inscription") ? "active" : ""}`}
+                    className={`sub-nav-link ${
+                      isActive("/admin/utilisateurs/inscription") ? "active" : ""
+                    }`}
                     onClick={() => setOpen(false)}
                   >
                     Inscription
                   </Link>
                   <Link
                     href="/admin/utilisateurs"
-                    className={`sub-nav-link ${isActive("/admin/utilisateurs") ? "active" : ""}`}
+                    className={`sub-nav-link ${
+                      isActive("/admin/utilisateurs") ? "active" : ""
+                    }`}
                     onClick={() => setOpen(false)}
                   >
                     Gestion
@@ -106,7 +140,11 @@ export default function Sidebar() {
               <Link
                 href="/admin/articles"
                 className={`nav-link ${isActive("/admin/articles") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
+                onClick={() => {
+                  setOpen(false);
+                  setSubmenuUsersOpen(false);
+                  setSubmenuPresenceOpen(false);
+                }}
               >
                 <Newspaper color="#FC6E11" />
                 Articles
@@ -114,8 +152,11 @@ export default function Sidebar() {
             </div>
             <div>
               <button
-                className={'nav-link w-full justify-between cursor-pointer'}
-                onClick={() => { setSubmenuUsersOpen(false); setSubmenuPresenceOpen(!submenuPresenceOpen); }}
+                className="nav-link w-full justify-between cursor-pointer"
+                onClick={() => {
+                  setSubmenuUsersOpen(false);
+                  setSubmenuPresenceOpen(!submenuPresenceOpen);
+                }}
               >
                 <div className="flex gap-4 items-center">
                   <FileChartColumn color="#FC6E11" />
@@ -134,14 +175,18 @@ export default function Sidebar() {
                 <div className="mt-2 mb-4 flex flex-col gap-2 ml-6 pl-4 border-l-2 border-gray-200">
                   <Link
                     href="/admin/presences/graphique"
-                    className={`sub-nav-link ${isActive("/admin/presences/graphique") ? "active" : ""}`}
+                    className={`sub-nav-link ${
+                      isActive("/admin/presences/graphique") ? "active" : ""
+                    }`}
                     onClick={() => setOpen(false)}
                   >
                     Graphique
                   </Link>
                   <Link
                     href="/admin/presences"
-                    className={`sub-nav-link ${isActive("/admin/presences") ? "active" : ""}`}
+                    className={`sub-nav-link ${
+                      isActive("/admin/presences") ? "active" : ""
+                    }`}
                     onClick={() => setOpen(false)}
                   >
                     Gestion
@@ -153,7 +198,11 @@ export default function Sidebar() {
               <Link
                 href="/admin/equipes"
                 className={`nav-link ${isActive("/admin/equipes") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
+                onClick={() => {
+                  setOpen(false);
+                  setSubmenuUsersOpen(false);
+                  setSubmenuPresenceOpen(false);
+                }}
               >
                 <Shirt color="#FC6E11" />
                 Équipes
@@ -163,7 +212,11 @@ export default function Sidebar() {
               <Link
                 href="/admin/convocations"
                 className={`nav-link ${isActive("/admin/convocations") ? "active" : ""}`}
-                onClick={() => { setOpen(false); setSubmenuUsersOpen(false); setSubmenuPresenceOpen(false); }}
+                onClick={() => {
+                  setOpen(false);
+                  setSubmenuUsersOpen(false);
+                  setSubmenuPresenceOpen(false);
+                }}
               >
                 <Scroll color="#FC6E11" />
                 Convocations

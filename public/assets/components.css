@@ -49,13 +49,25 @@ h4, .h4 {
 }
 
 .admin-home {
-  @apply flex flex-col h-full w-full;
+  @apply flex gap-6 lg:h-full w-full max-lg:flex-col;
 
-  & .little-card {
-    @apply shadow-md rounded-2xl p-4 h-auto w-full s:w-[47%] lg:w-[22%] xl:w-[23%] aspect-square;
+  & .number-card {
+    @apply shadow-md rounded-2xl p-4 h-[150px] w-full;
   }
 
-  & .big-card {
-    @apply text-white bg-bleu shadow-md rounded-2xl p-4 h-[300px] xl:h-[350px] w-full;
+  & .welcome-card {
+    @apply text-white bg-bleu shadow-md rounded-2xl p-4 w-full;
+  }
+
+  .chart-card {
+    @apply shadow-md rounded-2xl p-4 h-[350px] lg:h-11/20 w-full;
+  }
+
+  .test-card {
+    @apply shadow-md rounded-2xl p-4 h-[500px] lg:h-5/8 w-full;
+  }
+
+  .notif-card {
+    @apply shadow-md rounded-2xl p-4 h-[200px] lg:h-3/8 w-full;
   }
 }

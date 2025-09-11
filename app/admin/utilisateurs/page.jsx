@@ -69,15 +69,15 @@ export default function Utilisateurs() {
 
   return (
     <div className="admin-users">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center lg:justify-between mb-6">
         <div>
           <h1 className="text-orange max-lg:hidden">Utilisateurs</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex max-lg:flex-col gap-2 max-lg:w-full">
           <input
             type="text"
             placeholder="Rechercher par nom..."
-            className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@tanstack/react-table": "^8.21.3",
     "chart.js": "^4.5.0",
     "class-variance-authority": "^0.7.1",

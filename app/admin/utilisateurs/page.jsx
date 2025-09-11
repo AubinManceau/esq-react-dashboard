@@ -9,6 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Ellipsis, ArrowUpDown } from "lucide-react";
 
 const users = [
@@ -104,7 +112,7 @@ export default function Utilisateurs() {
       </div>
 
       <p className="text-sm text-gray-500 mb-2">
-        Affiche {paginatedUsers.length} sur {filteredUsers.length} utilisateurs
+        Affichage de {paginatedUsers.length} sur {filteredUsers.length} utilisateurs
       </p>
       <Table>
         <TableHeader>
@@ -144,9 +152,17 @@ export default function Utilisateurs() {
               <TableCell className="w-2/8">{user.telephone}</TableCell>
               <TableCell className="w-1/8">{user.role.join(", ")}</TableCell>
               <TableCell className="text-right w-1/8">
-                <div className="inline-flex justify-end w-full">
-                  <Ellipsis className="cursor-pointer" />
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <div className="inline-flex justify-end px-2 py-1 bg-bleu/5 rounded-md w-fit cursor-pointer">
+                      <Ellipsis color="#000066" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>Modifier</DropdownMenuItem>
+                    <DropdownMenuItem>Supprimer</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

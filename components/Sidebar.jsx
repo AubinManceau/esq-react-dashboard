@@ -47,7 +47,7 @@ export default function Sidebar() {
         <button onClick={() => setOpen(true)} className="p-2 rounded-md bg-orange text-white">
           <Menu size={24} />
         </button>
-        <span className="">{getPageTitle(pathname)}</span>
+        <span className="text-orange">{getPageTitle(pathname)}</span>
       </div>
 
       {open && (

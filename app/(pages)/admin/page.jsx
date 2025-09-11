@@ -34,7 +34,6 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-
   useEffect(() => {
     if (!chartRef.current) return;
     const ctx = chartRef.current.getContext("2d");
@@ -64,17 +63,13 @@ export default function Dashboard() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-        scales: {},
+        plugins: { legend: { display: false } },
       },
     });
 
     return () => {
       chartInstanceRef.current?.destroy();
+      chartInstanceRef.current = null;
     };
   }, [stats]);
 

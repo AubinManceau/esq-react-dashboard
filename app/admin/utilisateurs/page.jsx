@@ -12,18 +12,18 @@ import {
 import { Ellipsis, ArrowUpDown } from "lucide-react";
 
 const users = [
-  { id: 1, name: "Alice Dupont", email: "alice@example.com", role: "Admin" },
-  { id: 2, name: "Bob Martin", email: "bob@example.com", role: "Utilisateur" },
-  { id: 3, name: "Charlie Petit", email: "charlie@example.com", role: "Modérateur" },
-  { id: 4, name: "David Moreau", email: "david@example.com", role: "Utilisateur" },
-  { id: 5, name: "Emma Leblanc", email: "emma@example.com", role: "Admin" },
-  { id: 6, name: "Franck Dupuis", email: "franck@example.com", role: "Modérateur" },
-  { id: 7, name: "Alice Dupont", email: "alice@example.com", role: "Admin" },
-  { id: 8, name: "Bob Martin", email: "bob@example.com", role: "Utilisateur" },
-  { id: 9, name: "Charlie Petit", email: "charlie@example.com", role: "Modérateur" },
-  { id: 10, name: "David Moreau", email: "david@example.com", role: "Utilisateur" },
-  { id: 11, name: "Emma Leblanc", email: "emma@example.com", role: "Admin" },
-  { id: 12, name: "Franck Dupuis", email: "franck@example.com", role: "Modérateur" },
+  { id: 1, name: "Alice Dupont", email: "alice@example.com", telephone: '0765763214', role: ['Admin', 'Joueur'] },
+  { id: 2, name: "Bob Martin", email: "bob@example.com", telephone: '0765763215', role: ['Joueur'] },
+  { id: 3, name: "Charlie Petit", email: "charlie@example.com", telephone: '0765763216', role: ['Membre'] },
+  { id: 4, name: "David Moreau", email: "david@example.com", telephone: '0765763217', role: ['Joueur'] },
+  { id: 5, name: "Emma Leblanc", email: "emma@example.com", telephone: '0765763218', role: ['Admin'] },
+  { id: 6, name: "Franck Dupuis", email: "franck@example.com", telephone: '0765763219', role: ['Coach'] },
+  { id: 7, name: "Alice Dupont", email: "alice@example.com", telephone: '0765763220', role: ['Admin'] },
+  { id: 8, name: "Bob Martin", email: "bob@example.com", telephone: '0765763221', role: ['Joueur'] },
+  { id: 9, name: "Charlie Petit", email: "charlie@example.com", telephone: '0765763222', role: ['Membre'] },
+  { id: 10, name: "David Moreau", email: "david@example.com", telephone: '0765763223', role: ['Joueur'] },
+  { id: 11, name: "Emma Leblanc", email: "emma@example.com", telephone: '0765763224', role: ['Admin'] },
+  { id: 12, name: "Franck Dupuis", email: "franck@example.com", telephone: '0765763225', role: ['Coach'] },
 ];
 
 export default function Utilisateurs() {
@@ -35,7 +35,7 @@ export default function Utilisateurs() {
 
   const filteredUsers = users.filter((user) => {
     const matchesName = user.name.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter ? user.role === roleFilter : true;
+    const matchesRole = roleFilter ? user.role.includes(roleFilter) : true;
     return matchesName && matchesRole;
   });
 
@@ -71,7 +71,7 @@ export default function Utilisateurs() {
     <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
         <div>
-          <h1 className="text-orange max-lg:hidden">Utilisateurs</h1>
+          <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
         </div>
         <div className="flex max-lg:flex-col gap-2 max-lg:w-full">
           <input
@@ -94,8 +94,9 @@ export default function Utilisateurs() {
           >
             <option value="">Tous les rôles</option>
             <option value="Admin">Admin</option>
-            <option value="Modérateur">Modérateur</option>
-            <option value="Utilisateur">Utilisateur</option>
+            <option value="Membre">Membre</option>
+            <option value="Coach">Coach</option>
+            <option value="Joueur">Joueur</option>
           </select>
         </div>
       </div>
@@ -118,7 +119,7 @@ export default function Utilisateurs() {
               />
             </TableHead>
             <TableHead
-              className="cursor-pointer select-none w-3/8"
+              className="cursor-pointer select-none w-2/8"
               onClick={() => handleSort("email")}
             >
               Email{" "}
@@ -128,16 +129,18 @@ export default function Utilisateurs() {
                 }`}
               />
             </TableHead>
-            <TableHead className="w-2/8">Rôle</TableHead>
-            <TableHead className="text-right w-1/8">Actions</TableHead>
+            <TableHead className="w-2/8">Téléphone</TableHead>
+            <TableHead className="w-1/8">Rôles</TableHead>
+            <TableHead className="text-right w-1/8"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell className="font-medium w-2/8">{user.name}</TableCell>
-              <TableCell className="text-gray-500 w-3/8">{user.email}</TableCell>
-              <TableCell className="w-2/8">{user.role}</TableCell>
+              <TableCell className="text-gray-500 w-2/8">{user.email}</TableCell>
+              <TableCell className="w-2/8">{user.telephone}</TableCell>
+              <TableCell className="w-1/8">{user.role.join(", ")}</TableCell>
               <TableCell className="text-right w-1/8">
                 <div className="inline-flex justify-end w-full">
                   <Ellipsis className="cursor-pointer" />

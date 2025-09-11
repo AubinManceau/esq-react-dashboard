@@ -1,11 +1,11 @@
 table {
     border-collapse: separate;
-    border-spacing: 0 15px;
+    border-spacing: 0 10px;
 }
 
 thead {
     & tr {
-        @apply bg-transparent hover:bg-transparent;
+        @apply bg-transparent hover:bg-transparent uppercase font-default-light;
     }
 }
 

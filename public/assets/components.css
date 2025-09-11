@@ -69,14 +69,14 @@ h4, .h4 {
   @apply flex gap-6 lg:h-full w-full max-lg:flex-col;
 
   & .number-card {
-    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 h-[110px] lg:h-1/4 flex items-center s:justify-center md:justify-start pl-4 s:pl-0 s:py-2 md:pl-4 md:py-0;
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 h-[110px] lg:h-1/4 flex items-center justify-center md:justify-start pl-0 py-2 md:pl-4 md:py-0;
 
     & .category {
-      @apply font-default-semibold text-[16px]/[100%] xl:text-[20px]/[100%] s:text-center md:text-left;
+      @apply font-default-semibold text-[16px]/[100%] xl:text-[20px]/[100%] text-center md:text-left;
     }
 
     & .number-text {
-      @apply font-default-black text-[40px]/[100%] xl:text-[50px]/[100%] s:text-center md:text-left;
+      @apply font-default-black text-[40px]/[100%] xl:text-[50px]/[100%] text-center md:text-left;
     }
   }
 

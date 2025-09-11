@@ -1,14 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { Users } from "lucide-react";
+import { getUsers } from "@/app/utils/user";
 
 export default function Dashboard() {
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
 
+  const [stats, setStats] = useState({
+    seniors: 0,
+    jeunes: 0,
+    feminines: 0,
+    veterans: 0,
+  });
+
   useEffect(() => {
+    const fetchData = async () => {
+      const dataSenior = await getUsers({ roles: [1], categories: [7] });
+      const dataJeune = await getUsers({ roles: [1], categories: [1, 2, 3, 4, 5, 6] });
+      const dataFeminine = await getUsers({ roles: [1], categories: [10] });
+      const dataVeteran = await getUsers({ roles: [1], categories: [8] });
+
+      setStats({
+        seniors: dataSenior?.data?.length || 0,
+        jeunes: dataJeune?.data?.length || 0,
+        feminines: dataFeminine?.data?.length || 0,
+        veterans: dataVeteran?.data?.length || 0,
+      });
+    };
+
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    if (!chartRef.current) return;
     const ctx = chartRef.current.getContext("2d");
 
     if (chartInstanceRef.current) {
@@ -22,7 +50,7 @@ export default function Dashboard() {
         datasets: [
           {
             label: "Joueurs",
-            data: [50, 35, 15, 10],
+            data: [stats.seniors, stats.jeunes, stats.feminines, stats.veterans],
             backgroundColor: [
               "rgba(108, 83, 78, 1)",
               "rgba(252, 110, 17, 1)",
@@ -44,7 +72,11 @@ export default function Dashboard() {
         scales: {},
       },
     });
-  }, []);
+
+    return () => {
+      chartInstanceRef.current?.destroy();
+    };
+  }, [stats]);
 
   return (
     <div className="admin-home">
@@ -63,51 +95,55 @@ export default function Dashboard() {
         <div className="flex flex-col-reverse lg:flex-row gap-4 lg:h-6/8">
           <div className="chart-card">
             <h4>Nombre de joueurs par catégorie</h4>
-            <canvas className="lg:!max-h-[600px] !max-h-[350px]" ref={chartRef}></canvas>
+            {stats.seniors + stats.jeunes + stats.feminines + stats.veterans === 0 ? (
+              <p className="h-full min-h-[350px] flex items-center justify-center">Aucun joueur enregistré.</p>
+            ) : (
+              <canvas className="lg:!max-h-[600px] !max-h-[350px]" ref={chartRef}></canvas>
+            )}
           </div>
 
           <div className="grid grid-cols-2 s:grid-cols-4 lg:flex lg:flex-col gap-4 lg:w-3/8">
             <div className="number-card">
-              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex gap-2 md:gap-4 flex-col items-center md:items-start md:flex-row">
                 <div className="p-2 bg-[#6C534E] rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
                 <div className="flex flex-col">
                   <p className="category">Séniors</p>
-                  <p className="number-text">50</p>
+                  <p className="number-text">{stats.seniors}</p>
                 </div>
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex gap-2 md:gap-4 flex-col items-center md:items-start md:flex-row">
                 <div className="p-2 bg-orange rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
                 <div className="flex flex-col">
                   <p className="category">Jeunes</p>
-                  <p className="number-text">25</p>
+                  <p className="number-text">{stats.jeunes}</p>
                 </div>
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex gap-2 md:gap-4 flex-col items-center md:items-start md:flex-row">
                 <div className="p-2 bg-[#A67F8E] rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
                 <div className="flex flex-col">
                   <p className="category">Féminines</p>
-                  <p className="number-text">15</p>
+                  <p className="number-text">{stats.feminines}</p>
                 </div>
               </div>
             </div>
             <div className="number-card">
-              <div className="flex items-start gap-4 s:gap-2 md:gap-4 s:flex-col s:items-center md:items-start md:flex-row">
+              <div className="flex gap-2 md:gap-4 flex-col items-center md:items-start md:flex-row">
                 <div className="p-2 bg-bleu rounded-[5px] text-white w-fit">
                   <Users height={16} width={16} />
                 </div>
                 <div className="flex flex-col">
                   <p className="category">Vétérans</p>
-                  <p className="number-text">10</p>
+                  <p className="number-text">{stats.veterans}</p>
                 </div>
               </div>
             </div>

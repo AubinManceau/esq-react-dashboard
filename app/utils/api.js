@@ -2,6 +2,7 @@ const API_BASE_URL = "http://localhost:3000/api/v1";
 
 export async function fetchData(endpoint, options = {}) {
   try {
+    console.log(`${API_BASE_URL}${endpoint}`);
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {

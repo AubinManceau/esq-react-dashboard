@@ -70,13 +70,13 @@ export default function Sidebar() {
         </button>
 
         <nav>
-          <div className="bg-orange py-8 mb-10 rounded-tr-[15px]">
+          <div className="bg-orange py-8 mb-2 lg:mb-10 rounded-tr-[15px]">
             <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
               Etoile Sportive{" "}
               <span className="font-default-medium">Quelainaise</span>
             </h2>
           </div>
-          <div className="flex flex-col gap-4 px-3 mt-16 lg:mt-0">
+          <div className="flex flex-col gap-4 px-3">
             <div>
               <Link
                 href="/admin"

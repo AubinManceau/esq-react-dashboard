@@ -1,0 +1,29 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}
+
+thead {
+    & tr {
+        @apply bg-transparent hover:bg-transparent;
+    }
+}
+
+tr  {
+    @apply bg-white hover:bg-orange/10 transition-colors border-0;
+
+    & td {
+        @apply py-3 px-4;
+    
+        &:first-child {
+            @apply rounded-[10px_0_0_10px];
+        }
+        &:last-child {
+            @apply rounded-[0_10px_10px_0];
+        }
+    }
+}
+
+.pagination-next, .pagination-previous {
+    @apply px-3 py-1 border border-bleu rounded-md disabled:opacity-20 disabled:border-black hover:bg-bleu/10 text-bleu disabled:text-black cursor-pointer disabled:cursor-default disabled:hover:bg-transparent h-[34px];
+}

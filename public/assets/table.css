@@ -5,21 +5,21 @@ table {
 
 thead {
     & tr {
-        @apply bg-transparent hover:bg-transparent uppercase font-default-light;
+        @apply bg-transparent hover:bg-transparent uppercase font-default-light shadow-none border-0;
     }
 }
 
 tr  {
-    @apply bg-white hover:bg-orange/10 transition-colors border-0;
+    @apply bg-white shadow-sm rounded-[5px] border-1 border-black/2 hover:bg-orange/10 transition-colors border-0;
 
     & td {
         @apply py-3 px-4;
     
         &:first-child {
-            @apply rounded-[10px_0_0_10px];
+            @apply rounded-[5px_0_0_5px];
         }
         &:last-child {
-            @apply rounded-[0_10px_10px_0];
+            @apply rounded-[0_5px_5px_0];
         }
     }
 }

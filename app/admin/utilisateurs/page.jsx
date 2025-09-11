@@ -77,16 +77,18 @@ export default function Utilisateurs() {
           <input
             type="text"
             placeholder="Rechercher par nom..."
-            className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            className="px-3 py-2 focus:outline-none w-full bg-white shadow-sm rounded-[5px] border-1 border-black/2"
             value={search}
+            name="search"
             onChange={(e) => {
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
           />
           <select
-            className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 focus:outline-none bg-white shadow-sm rounded-[5px] border-1 border-black/2"
             value={roleFilter}
+            name="role"
             onChange={(e) => {
               setRoleFilter(e.target.value);
               setCurrentPage(1);

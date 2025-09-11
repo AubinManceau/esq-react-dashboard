@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { Users } from "lucide-react";
-import { getUsers } from "@/app/utils/user";
+import { getUsers } from "@/lib/user";
 
 export default function StatsCard() {
     const chartRef = useRef(null);

@@ -1,6 +1,6 @@
-import WelcomeCard from "@/app/components/adminCards/WelcomeCard";
-import StatsCard from "@/app/components/adminCards/StatsCard";
-import NotifsCard from "@/app/components/adminCards/NotifsCard";
+import WelcomeCard from "../../components/adminCards/WelcomeCard";
+import StatsCard from "../../components/adminCards/StatsCard";
+import NotifsCard from "../../components/adminCards/NotifsCard";
 
 export default function Dashboard() {
   return (

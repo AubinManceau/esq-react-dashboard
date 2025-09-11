@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { login } from "../../utils/auth";
+import { login } from "../../lib/auth";
 import { redirect } from "next/navigation";
 
 export default function Login() {

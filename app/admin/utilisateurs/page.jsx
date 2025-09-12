@@ -68,7 +68,7 @@ export default function Utilisateurs() {
   }, [sortedUsers, currentPage, itemsPerPage]);
 
   return (
-    <div className="admin-users h-[80%]">
+    <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
         <div>
           <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>

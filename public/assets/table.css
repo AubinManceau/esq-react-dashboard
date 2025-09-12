@@ -27,3 +27,11 @@ tr  {
 .pagination-next, .pagination-previous {
     @apply px-3 py-1 border border-bleu rounded-md disabled:opacity-20 disabled:border-black hover:bg-bleu/10 text-bleu disabled:text-black cursor-pointer disabled:cursor-default disabled:hover:bg-transparent h-[34px];
 }
+
+[data-slot="dropdown-menu-content"] {
+    @apply bg-white border-1 border-black/2 shadow-sm rounded-[5px];
+
+    & [data-slot="dropdown-menu-item"] {
+        @apply px-3 py-2 hover:bg-orange/10 cursor-pointer;
+    }
+}

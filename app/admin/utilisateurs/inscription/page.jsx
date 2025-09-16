@@ -1,14 +1,22 @@
 "use client";
 import { useState } from "react";
 import { Upload, Plus, Trash2 } from "lucide-react";
+import { signup } from "../../../../lib/auth";
 
 export default function UtilisateursInscriptions() {
     const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [globalError, setGlobalError] = useState("");
     const [phone, setPhone] = useState("");
+    const [phoneError, setPhoneError] = useState("");
     const [firstName, setFirstName] = useState("");
+    const [firstNameError, setFirstNameError] = useState("");
     const [lastName, setLastName] = useState("");
+    const [lastNameError, setLastNameError] = useState("");
     const [roles, setRoles] = useState([{ roleId: "", categoryId: "" }]);
+    const [rolesError, setRolesError] = useState("");
     const [fileName, setFileName] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleAddRole = () => {
         setRoles([...roles, { roleId: "", categoryId: "" }]);
@@ -44,6 +52,36 @@ export default function UtilisateursInscriptions() {
     const addUser = (e) => {
         e.preventDefault();
 
+        setLoading(true);
+
+        setEmailError("");
+        setPhoneError("");
+        setFirstNameError("");
+        setLastNameError("");
+        setRolesError("");
+        setGlobalError("");
+
+        let hasError = false;
+        if (!email) {
+            setEmailError("Le champ email est requis.");
+            hasError = true;
+        }
+        if (!firstName) {
+            setFirstNameError("Le champ prénom est requis.");
+            hasError = true;
+        }
+        if (!lastName) {
+            setLastNameError("Le champ nom est requis.");
+            hasError = true;
+        }
+        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === "3" || role.roleId === "4") && !role.categoryId))) {
+            setRolesError("Au moins un rôle valide est requis.");
+            hasError = true;
+        }
+        if (hasError) {
+            return;
+        }
+
         const data = {
             firstName: firstName,
             lastName: lastName,
@@ -51,7 +89,19 @@ export default function UtilisateursInscriptions() {
             phone: phone,
             rolesCategories: roles,
         };
-        console.log("Données de l'utilisateur à ajouter :", data);
+
+        const res = signup(data);
+        if (res) {
+            setGlobalError("Utilisateur ajouté avec succès.");
+            setEmail("");
+            setPhone("");
+            setFirstName("");
+            setLastName("");
+            setRoles([{ roleId: "", categoryId: "" }]);
+        } else {
+            setGlobalError("Erreur lors de l'ajout de l'utilisateur.");
+        }
+        setLoading(false);
     };
 
     const addUsers = (e) => {

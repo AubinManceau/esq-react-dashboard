@@ -16,6 +16,7 @@ form {
 }
 
 form.register-form {
+  @apply flex flex-col justify-center h-full;
   & input {
     @apply border-black border-1 p-4 rounded-[5px] focus:outline-none text-black font-default-medium text-[14px] lg:text-[16px];
   }

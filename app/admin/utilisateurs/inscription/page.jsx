@@ -48,13 +48,12 @@ export default function UtilisateursInscriptions() {
             <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
         </div>
 
-        <div className="flex flex-col lg:flex-row h-full">
-            <div className="lg:w-1/2 h-full pb-8 lg:px-8 lg:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm mb-8 lg:mb-0 lg:mr-4">
+        <div className="flex flex-col lg:flex-row">
+            <div className="lg:w-1/2 px-2 py-2 md:px-8 md:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm mb-8 lg:mb-0 lg:mr-4">
                 <form className="register-form">
                     <div className="flex flex-col gap-4">
-                    {/* Infos utilisateur */}
                     <div className="flex max-lg:flex-col gap-4 w-full">
-                        <div className="flex flex-col relative lg:w-1/2">
+                        <div className="flex flex-col relative lg:w-[calc(50%-1rem)]">
                         <label htmlFor="first-name">Prénom</label>
                         <input
                             type="text"
@@ -102,11 +101,9 @@ export default function UtilisateursInscriptions() {
                         />
                     </div>
 
-                    {/* 🔹 Répétiteur des rôles */}
                     <div className="flex flex-col gap-3 p-4 border rounded-[5px]">
                         {roles.map((item, index) => (
                         <div key={index} className="flex items-center gap-3">
-                            {/* Select rôle */}
                             <select
                             value={item.roleId}
                             onChange={(e) =>
@@ -121,7 +118,6 @@ export default function UtilisateursInscriptions() {
                             <option value="4">Coach</option>
                             </select>
 
-                            {/* Select catégorie si joueur (3) ou coach (4) */}
                             {(item.roleId === "3" || item.roleId === "4") && (
                             <select
                                 value={item.category}
@@ -143,7 +139,6 @@ export default function UtilisateursInscriptions() {
                             </select>
                             )}
 
-                            {/* Supprimer un rôle */}
                             {roles.length > 1 && (
                             <button
                                 type="button"
@@ -156,7 +151,6 @@ export default function UtilisateursInscriptions() {
                         </div>
                         ))}
 
-                        {/* Ajouter un rôle */}
                         <button
                         type="button"
                         onClick={handleAddRole}
@@ -172,7 +166,7 @@ export default function UtilisateursInscriptions() {
                 </form>
             </div>
 
-            <div className="lg:w-1/2 h-full pt-8 lg:px-8 lg:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm lg:ml-4">
+            <div className="lg:w-1/2 px-2 py-2 md:px-8 md:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm lg:ml-4">
                 <form className="register-form">
                     <div className="relative h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-orange rounded-xl cursor-pointer hover:bg-orange/10 transition">
                         <input

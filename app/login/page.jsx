@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { login } from "../../lib/auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -12,6 +12,8 @@ export default function Login() {
     const [globalError, setGlobalError] = useState("");
     const [forgotPassword, setForgotPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,8 +49,9 @@ export default function Login() {
         }
 
         const res = await login(email, password);
-        if (res) {
-            redirect("/admin");
+        if (res?.status === "success") {
+            console.log(res);
+            router.push("/admin");
         } else {
             setGlobalError("Email ou mot de passe incorrect.");
         }

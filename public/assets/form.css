@@ -18,17 +18,17 @@ form {
 form.register-form {
   @apply flex flex-col justify-center h-full;
   & input {
-    @apply border-black border-1 p-4 rounded-[5px] focus:outline-none text-black font-default-medium text-[14px] lg:text-[16px];
+    @apply border-black border-1 p-3 rounded-[5px] focus:outline-none text-black font-default-medium text-[14px];
   }
   & label {
-    @apply absolute top-1/2 transform -translate-y-1/2 left-4 text-black font-default-medium text-[14px] lg:text-[16px] pointer-events-none transition-all duration-200;
+    @apply absolute top-1/2 transform -translate-y-1/2 left-4 text-black font-default-medium text-[14px] pointer-events-none transition-all duration-200;
   }
 
   & .focused label {
-    @apply top-[10px] text-[11px];
+    @apply top-[8px] text-[10px];
   }
 
   & select {
-    @apply border-black border-1 p-[17.5px] rounded-[5px] focus:outline-none text-black font-default-medium text-[14px] lg:text-[16px] bg-white;
+    @apply border-black border-1 p-3 rounded-[5px] focus:outline-none text-black font-default-medium text-[14px] bg-white;
   }
 }

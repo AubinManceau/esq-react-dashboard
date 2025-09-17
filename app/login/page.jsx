@@ -93,6 +93,7 @@ export default function Login() {
                                             onChange={(e) => setPassword(e.target.value)}
                                             onFocus={(e) => e.target.parentNode.classList.add("focused")}
                                             onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
+                                            autocomplete="off"
                                             disabled={loading}
                                         />
                                     </div>

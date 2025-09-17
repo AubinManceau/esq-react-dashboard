@@ -3,7 +3,7 @@ form {
     @apply border-white border-1 p-4 rounded-[5px] focus:outline-none text-white font-default-medium text-[14px] lg:text-[16px];
   }
   & label {
-    @apply absolute top-1/2 transform -translate-y-1/2 left-4 text-white font-default-medium text-[14px] lg:text-[16px] pointer-events-none transition-all duration-200;
+    @apply absolute top-1/2 transform -translate-y-1/2 left-3 text-white font-default-medium text-[14px] lg:text-[16px] pointer-events-none transition-all duration-200;
   }
 
   & .focused label {
@@ -21,7 +21,7 @@ form.register-form {
     @apply border-black border-1 p-3 rounded-[5px] focus:outline-none text-black font-default-medium text-[14px];
   }
   & label {
-    @apply absolute top-1/2 transform -translate-y-1/2 left-4 text-black font-default-medium text-[14px] pointer-events-none transition-all duration-200;
+    @apply absolute top-1/2 transform -translate-y-1/2 left-3 text-black font-default-medium text-[14px] pointer-events-none transition-all duration-200;
   }
 
   & .focused label {

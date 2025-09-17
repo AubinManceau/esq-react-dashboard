@@ -13,13 +13,17 @@ import {
   ChevronDown,
   FileChartColumn,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { logout } from "@/lib/auth";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [submenuUsersOpen, setSubmenuUsersOpen] = useState(false);
   const [submenuPresenceOpen, setSubmenuPresenceOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (pathname.startsWith("/admin/utilisateurs")) {
@@ -39,6 +43,21 @@ export default function Sidebar() {
     if (path.startsWith("/admin/equipes")) return "Équipes";
     if (path.startsWith("/admin/convocations")) return "Convocations";
     return "";
+  };
+
+  const openLogoutModal = () => {
+    setLogoutModalOpen(true);
+  };
+
+  const handleLogout = async () => {
+    const res = await logout();
+    if (!res.status === "success") return;
+    setLogoutModalOpen(false);
+    router.push("/");
+  };
+
+  const cancelLogout = () => {
+    setLogoutModalOpen(false);
   };
 
   return (
@@ -221,7 +240,7 @@ export default function Sidebar() {
           </div>
         </nav>
 
-        <button className="flex items-center gap-6 rounded-md mb-8 py-3 px-6 cursor-pointer">
+        <button className="flex items-center gap-6 rounded-md mb-8 py-3 px-6 cursor-pointer" onClick={openLogoutModal}>
           <div className="bg-orange p-3 rounded-full">
             <LogOut color="white" />
           </div>
@@ -231,6 +250,34 @@ export default function Sidebar() {
           </div>
         </button>
       </aside>
+
+      {logoutModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={cancelLogout}
+        >
+          <div
+            className="bg-white rounded-lg py-6 px-12 max-w-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Confirmer la déconnexion</h2>
+            <p className="mb-10">
+              Êtes-vous bien sûr de vouloir vous déconnecter ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="btn !bg-gray-300 hover:!bg-gray-400 !text-black"
+                onClick={cancelLogout}
+              >
+                Annuler
+              </button>
+              <button className="btn" onClick={handleLogout}>
+                Déconnecter
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

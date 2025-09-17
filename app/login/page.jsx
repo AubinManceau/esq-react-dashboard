@@ -50,7 +50,6 @@ export default function Login() {
 
         const res = await login(email, password);
         if (res?.status === "success") {
-            console.log(res);
             router.push("/admin");
         } else {
             setGlobalError("Email ou mot de passe incorrect.");
@@ -93,7 +92,7 @@ export default function Login() {
                                             onChange={(e) => setPassword(e.target.value)}
                                             onFocus={(e) => e.target.parentNode.classList.add("focused")}
                                             onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
-                                            autocomplete="off"
+                                            autoComplete="off"
                                             disabled={loading}
                                         />
                                     </div>

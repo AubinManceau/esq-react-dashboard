@@ -1,22 +1,50 @@
 "use client";
-import { useState } from "react";
-import { Upload, Plus, Trash2 } from "lucide-react";
-import { signup } from "../../../../lib/auth";
 
-export default function UtilisateursInscriptions() {
-    const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [globalError, setGlobalError] = useState("");
-    const [phone, setPhone] = useState("");
-    const [phoneError, setPhoneError] = useState("");
+import { useEffect, useState, use } from "react";
+import { getUserById, updateUserByAdmin } from "@/lib/user";
+import { Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+export default function DetailsUtilisateur({ params }) {
+    const { id } = use(params);
     const [firstName, setFirstName] = useState("");
-    const [firstNameError, setFirstNameError] = useState("");
     const [lastName, setLastName] = useState("");
-    const [lastNameError, setLastNameError] = useState("");
-    const [roles, setRoles] = useState([{ roleId: "", categoryId: "" }]);
-    const [rolesError, setRolesError] = useState("");
-    const [fileName, setFileName] = useState(null);
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [firstNameError, setFirstNameError] = useState("");
+    const [lastNameError, setLastNameError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [phoneError, setPhoneError] = useState("");
+    const [rolesError, setRolesError] = useState("");
+    const [globalError, setGlobalError] = useState(null);
+    const [isActive, setIsActive] = useState("");
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            try {
+                const user = await getUserById(id);
+                if (user?.status === "success") {
+                    setFirstName(user.data.user.firstName || "");
+                    setLastName(user.data.user.lastName || "");
+                    setEmail(user.data.user.email || "");
+                    setPhone(user.data.user.phone || "");
+                    setRoles(user.data.user.UserRolesCategories || []);
+                    setIsActive(user.data.user.isActive || false);
+                } else {
+                    setGlobalError("Impossible de charger l'utilisateur.");
+                }
+            } catch (err) {
+                setGlobalError("Erreur lors de la récupération de l'utilisateur.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, [id]);
 
     const handleAddRole = () => {
         setRoles([...roles, { roleId: "", categoryId: "" }]);
@@ -41,82 +69,35 @@ export default function UtilisateursInscriptions() {
         setRoles(updated);
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            console.log("Fichier sélectionné :", file.name);
-        }
-    };
-
-    const addUser = async (e) => {
+    const updateUser = async (e) => {
         e.preventDefault();
-
         setLoading(true);
-
-        setEmailError("");
-        setPhoneError("");
-        setFirstNameError("");
-        setLastNameError("");
-        setRolesError("");
-        setGlobalError("");
-
-        let hasError = false;
-        if (!email) {
-            setEmailError("Le champ email est requis.");
-            hasError = true;
-        }
-        if (!firstName) {
-            setFirstNameError("Le champ prénom est requis.");
-            hasError = true;
-        }
-        if (!lastName) {
-            setLastNameError("Le champ nom est requis.");
-            hasError = true;
-        }
-        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === "1" || role.roleId === "2") && !role.categoryId))) {
-            setRolesError("Au moins un rôle valide est requis.");
-            hasError = true;
-        }
-        if (hasError) {
-            setLoading(false);
-            return;
-        }
 
         const data = {
             firstName: firstName,
             lastName: lastName,
             email: email,
             phone: phone,
+            isActive: isActive,
             rolesCategories: roles,
         };
 
-        const res = await signup(data);
+        const res = await updateUserByAdmin(id, data);
         if (res?.status === "success") {
-            setEmail("");
-            setPhone("");
-            setFirstName("");
-            setLastName("");
-            setRoles([{ roleId: "", categoryId: "" }]);
+            router.push("/admin/utilisateurs");
         } else {
-            setGlobalError("Erreur lors de l'ajout de l'utilisateur.");
+            setGlobalError("Erreur lors de la mise à jour de l'utilisateur.");
         }
         setLoading(false);
     };
-
-    const addUsers = (e) => {
-        e.preventDefault();
-        console.log("Ajouter plusieurs utilisateurs via fichier CSV");
-    }
 
     return (
         <div className="admin-users">
             <div className="mb-8">
                 <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
             </div>
-
-            <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/2 px-2 py-2 md:px-8 md:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm mb-8 md:mb-0 md:mr-4">
+            <div className="flex flex-col lg:flex-row gap-6 w-full">
+                <div className="w-7/10 p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
                     <form className="register-form">
                         <div className="flex flex-col gap-4">
                             <div className="flex max-md:flex-col gap-4 w-full">
@@ -189,9 +170,9 @@ export default function UtilisateursInscriptions() {
                                         <option value="4">Admin</option>
                                         </select>
 
-                                        {(item.roleId === "1" || item.roleId === "2") && (
+                                        {(String(item.roleId) === "1" || String(item.roleId) === "2") && (
                                         <select
-                                            value={item.categoryId}
+                                            value={String(item.categoryId)}
                                             onChange={(e) =>
                                             handleChangeCategory(index, e.target.value)
                                             }
@@ -228,51 +209,36 @@ export default function UtilisateursInscriptions() {
                                 </div>
                                 {rolesError && <p className="error-message mt-1">{rolesError}</p>}
                             </div>
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="is-active"
+                                    checked={isActive}
+                                    onChange={(e) => setIsActive(e.target.checked)}
+                                />
+                                <label htmlFor="is-active" className="cursor-pointer !relative">Compte actif ?</label>
+                            </div>
                         </div>
                         <div className="flex flex-col items-center mt-6">
                             {globalError && <p className="error-message text-center mb-2">{globalError}</p>}
-                            <button className="btn flex items-center justify-center gap-2 w-full" onClick={addUser}>
+                            <button className="btn flex items-center justify-center gap-2 w-full" onClick={updateUser}>
                                 {loading && (
                                     <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 )}
-                                {loading ? "" : "Inscrire l'utilisateur"}
+                                {loading ? "" : "Modifier l'utilisateur"}
                             </button>
                         </div>
                     </form>
                 </div>
-
-                <div className="md:w-1/2 px-2 py-2 md:px-8 md:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm md:ml-4">
-                    <form className="register-form">
-                        <div className="relative h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-orange rounded-xl cursor-pointer hover:bg-orange/10 transition">
-                            <input
-                                type="file"
-                                id="file-upload"
-                                accept=".csv"
-                                className="opacity-0 absolute w-full h-full cursor-pointer"
-                                onChange={handleFileChange}
-                            />
-                            { fileName ? (
-                                <>
-                                    <p className="mb-2">{fileName}</p>
-                                    <p className="text-gray-500">OU</p>
-                                    <p className="btn mt-2 !px-4 !py-2">Changer de fichier</p>
-                                </>
-                            ) : (
-                            <>
-                                <Upload className="w-12 h-12 text-orange mb-2" />
-                                <p className="text-gray-700 font-medium">Déposer le fichier ici</p>
-                                <p className="text-gray-500">OU</p>
-                                <p className="btn mt-2 !px-4 !py-2">Télécharger le fichier</p>
-                                <p className="mt-2 text-xs text-gray-400">Format CSV uniquement</p>
-                            </>
-                            )}
-                        </div>
-                        <button className="btn mt-6 w-full" onClick={addUsers}>
-                            Inscrire les utilisateurs
-                        </button>
-                    </form>
+                <div className="flex flex-col w-3/10 gap-6">
+                    <div className="w-full p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
+                        <h2>Détails de l'utilisateur {id}</h2>
+                    </div>
+                    <div className="w-full p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
+                        <h2>Détails de l'utilisateur {id}</h2>
+                    </div>
                 </div>
-            </div>    
+            </div>
         </div>
     );
 }

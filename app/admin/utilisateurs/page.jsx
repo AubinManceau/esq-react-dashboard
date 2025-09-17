@@ -5,7 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Ellipsis, ArrowUpDown } from "lucide-react";
 import Pagination from "@/components/Pagination";
-import { getUsers } from "@/lib/user";
+import { getUsers, deleteUser } from "@/lib/user";
+import Link from "next/link";
 
 export default function Utilisateurs() {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,8 @@ export default function Utilisateurs() {
   const [roleFilter, setRoleFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -22,8 +25,6 @@ export default function Utilisateurs() {
     };
     fetchData();
   }, []);
-
-  console.log("Users:", users);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -63,9 +64,19 @@ export default function Utilisateurs() {
   const sortedUsers = useMemo(() => {
     if (!sortConfig) return filteredUsers;
     const { key, direction } = sortConfig;
+
     return [...filteredUsers].sort((a, b) => {
-      const valueA = a[key]?.toString().toLowerCase?.() ?? "";
-      const valueB = b[key]?.toString().toLowerCase?.() ?? "";
+      let valueA = "";
+      let valueB = "";
+
+      if (key === "name") {
+        valueA = `${a.firstName} ${a.lastName}`.toLowerCase();
+        valueB = `${b.firstName} ${b.lastName}`.toLowerCase();
+      } else {
+        valueA = a[key]?.toString().toLowerCase() ?? "";
+        valueB = b[key]?.toString().toLowerCase() ?? "";
+      }
+
       if (valueA < valueB) return direction === "asc" ? -1 : 1;
       if (valueA > valueB) return direction === "asc" ? 1 : -1;
       return 0;
@@ -79,6 +90,28 @@ export default function Utilisateurs() {
       currentPage * itemsPerPage
     );
   }, [sortedUsers, currentPage, itemsPerPage]);
+
+  const handleDelete = async () => {
+    if (!userToDelete) return;
+    try {
+      const res = await deleteUser(userToDelete);
+      if (res?.status === "success") {
+        setUsers((prev) => prev.filter((user) => user.id !== userToDelete));
+        setUserToDelete(null);
+        setDeleteModalOpen(false);
+      } else {
+        console.error("Erreur lors de la suppression de l'utilisateur");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+    }
+    setUserToDelete(null);
+    setDeleteModalOpen(false);
+  }
+
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+  }
 
   return (
     <div className="admin-users">
@@ -172,8 +205,8 @@ export default function Utilisateurs() {
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem>Modifier</DropdownMenuItem>
-                        <DropdownMenuItem>Supprimer</DropdownMenuItem>
+                        <DropdownMenuItem><Link href={`/admin/utilisateurs/${user.id}`}>Modifier</Link></DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setDeleteModalOpen(true); setUserToDelete(user.id); }}>Supprimer</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -188,6 +221,33 @@ export default function Utilisateurs() {
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           )}
         </>
+      )}
+      {deleteModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={cancelDelete}
+        >
+          <div
+            className="bg-white rounded-lg py-6 px-12 max-w-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Confirmer la suppression</h2>
+            <p className="mb-10">
+              Êtes-vous bien sûr de vouloir supprimer cet utilisateur ?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="btn !bg-gray-300 hover:!bg-gray-400 !text-black"
+                onClick={cancelDelete}
+              >
+                Annuler
+              </button>
+              <button className="btn" onClick={handleDelete}>
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

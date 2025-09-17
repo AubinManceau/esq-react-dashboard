@@ -41,13 +41,13 @@ export default function UtilisateursInscriptions() {
         setRoles(updated);
     };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileName(file.name);
-      console.log("Fichier sélectionné :", file.name);
-    }
-  };
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            console.log("Fichier sélectionné :", file.name);
+        }
+    };
 
     const addUser = (e) => {
         e.preventDefault();
@@ -74,11 +74,12 @@ export default function UtilisateursInscriptions() {
             setLastNameError("Le champ nom est requis.");
             hasError = true;
         }
-        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === "3" || role.roleId === "4") && !role.categoryId))) {
+        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === "1" || role.roleId === "2") && !role.categoryId))) {
             setRolesError("Au moins un rôle valide est requis.");
             hasError = true;
         }
         if (hasError) {
+            setLoading(false);
             return;
         }
 
@@ -91,8 +92,7 @@ export default function UtilisateursInscriptions() {
         };
 
         const res = signup(data);
-        if (res) {
-            setGlobalError("Utilisateur ajouté avec succès.");
+        if (res?.status === "success") {
             setEmail("");
             setPhone("");
             setFirstName("");
@@ -119,112 +119,132 @@ export default function UtilisateursInscriptions() {
                 <div className="md:w-1/2 px-2 py-2 md:px-8 md:py-8 bg-white border-1 border-black/5 rounded-[10px] shadow-sm mb-8 md:mb-0 md:mr-4">
                     <form className="register-form">
                         <div className="flex flex-col gap-4">
-                        <div className="flex max-md:flex-col gap-4 w-full">
-                            <div className="flex flex-col relative md:w-[calc(50%-1rem)]">
-                            <label htmlFor="first-name">Prénom</label>
-                            <input
-                                type="text"
-                                id="first-name"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                onFocus={(e) => e.target.parentNode.classList.add("focused")}
-                                onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
-                            />
+                            <div className="flex max-md:flex-col gap-4 w-full">
+                                <div className="md:w-[calc(50%-0.5rem)]">
+                                    <div className="flex flex-col relative">
+                                        <label htmlFor="first-name">Prénom</label>
+                                        <input
+                                            type="text"
+                                            id="first-name"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            onFocus={(e) => e.target.parentNode.classList.add("focused")}
+                                            onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
+                                        />
+                                    </div>
+                                    {firstNameError && <p className="error-message mt-1">{firstNameError}</p>}
+                                </div>
+                                <div className="md:w-[calc(50%-0.5rem)]">
+                                    <div className="flex flex-col relative">
+                                        <label htmlFor="last-name">Nom</label>
+                                        <input
+                                            type="text"
+                                            id="last-name"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            onFocus={(e) => e.target.parentNode.classList.add("focused")}
+                                            onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
+                                        />
+                                    </div>
+                                    {lastNameError && <p className="error-message mt-1">{lastNameError}</p>}
+                                </div>
                             </div>
-                            <div className="flex flex-col relative md:w-1/2">
-                            <label htmlFor="last-name">Nom</label>
-                            <input
-                                type="text"
-                                id="last-name"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                onFocus={(e) => e.target.parentNode.classList.add("focused")}
-                                onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
-                            />
+
+                            <div>
+                                <div className="flex flex-col relative">
+                                    <label htmlFor="phone">Téléphone</label>
+                                    <input
+                                    type="tel"
+                                    id="phone"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    onFocus={(e) => e.target.parentNode.classList.add("focused")}
+                                    onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
+                                    />
+                                </div>
+                                {phoneError && <p className="error-message mt-1">{phoneError}</p>}
+                            </div>
+
+                            <div>
+                                <div className="flex flex-col relative">
+                                    <label htmlFor="email">Email</label>
+                                    <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    onFocus={(e) => e.target.parentNode.classList.add("focused")}
+                                    onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
+                                    />
+                                </div>
+                                {emailError && <p className="error-message mt-1">{emailError}</p>}
+                            </div>
+                            <div>
+                                <div className="flex flex-col gap-3 p-4 border rounded-[5px]">
+                                    {roles.map((item, index) => (
+                                    <div key={index} className="flex justify-between items-center gap-3 bg-orange/5 p-2 rounded-[5px]">
+                                        <select
+                                        value={item.roleId}
+                                        onChange={(e) =>
+                                            handleChangeRole(index, "roleId", e.target.value)
+                                        }
+                                        className="border rounded px-2 py-1 w-1/2"
+                                        >
+                                        <option value="">Sélectionner un rôle</option>
+                                        <option value="1">Joueur</option>
+                                        <option value="2">Coach</option>
+                                        <option value="3">Membre</option>
+                                        <option value="4">Admin</option>
+                                        </select>
+
+                                        {(item.roleId === "1" || item.roleId === "2") && (
+                                        <select
+                                            value={item.category}
+                                            onChange={(e) =>
+                                            handleChangeCategory(index, e.target.value)
+                                            }
+                                            className="border rounded px-2 py-1 w-1/2"
+                                        >
+                                            <option value="">Sélectionner une catégorie</option>
+                                            <option value="1">U7</option>
+                                            <option value="2">U9</option>
+                                            <option value="3">U11</option>
+                                            <option value="4">U13</option>
+                                            <option value="5">U15</option>
+                                            <option value="6">U18</option>
+                                            <option value="7">Seniors</option>
+                                            <option value="8">Vétérans</option>
+                                            <option value="9">Féminines</option>
+                                        </select>
+                                        )}
+
+                                        <button type="button" onClick={() => handleRemoveRole(index)} className="w-[35px] flex items-center justify-center cursor-pointer">
+                                            <Trash2 className="text-orange" />
+                                        </button>
+                                    </div>
+                                    ))}
+
+                                    <button
+                                    type="button"
+                                    onClick={handleAddRole}
+                                    className="text-orange flex items-center gap-1 cursor-pointer hover:underline"
+                                    >
+                                    <Plus />
+                                    Ajouter un rôle
+                                    </button>
+                                </div>
+                                {rolesError && <p className="error-message mt-1">{rolesError}</p>}
                             </div>
                         </div>
-
-                        <div className="flex flex-col relative">
-                            <label htmlFor="phone">Téléphone</label>
-                            <input
-                            type="tel"
-                            id="phone"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            onFocus={(e) => e.target.parentNode.classList.add("focused")}
-                            onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
-                            />
-                        </div>
-
-                        <div className="flex flex-col relative">
-                            <label htmlFor="email">Email</label>
-                            <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            onFocus={(e) => e.target.parentNode.classList.add("focused")}
-                            onBlur={(e) => {if (!e.target.value) e.target.parentNode.classList.remove("focused")}}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-3 p-4 border rounded-[5px]">
-                            {roles.map((item, index) => (
-                            <div key={index} className="flex justify-between items-center gap-3 bg-orange/5 p-2 rounded-[5px]">
-                                <select
-                                value={item.roleId}
-                                onChange={(e) =>
-                                    handleChangeRole(index, "roleId", e.target.value)
-                                }
-                                className="border rounded px-2 py-1 w-1/2"
-                                >
-                                <option value="">Sélectionner un rôle</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Membre</option>
-                                <option value="3">Joueur</option>
-                                <option value="4">Coach</option>
-                                </select>
-
-                                {(item.roleId === "3" || item.roleId === "4") && (
-                                <select
-                                    value={item.category}
-                                    onChange={(e) =>
-                                    handleChangeCategory(index, e.target.value)
-                                    }
-                                    className="border rounded px-2 py-1 w-1/2"
-                                >
-                                    <option value="">Sélectionner une catégorie</option>
-                                    <option value="1">U7</option>
-                                    <option value="2">U9</option>
-                                    <option value="3">U11</option>
-                                    <option value="4">U13</option>
-                                    <option value="5">U15</option>
-                                    <option value="6">U18</option>
-                                    <option value="7">Seniors</option>
-                                    <option value="8">Vétérans</option>
-                                    <option value="9">Féminines</option>
-                                </select>
+                        <div className="flex flex-col items-center mt-6">
+                            {globalError && <p className="error-message text-center mb-2">{globalError}</p>}
+                            <button className="btn flex items-center justify-center gap-2 w-full" onClick={addUser}>
+                                {loading && (
+                                    <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 )}
-
-                                <button type="button" onClick={() => handleRemoveRole(index)} className="w-[35px] flex items-center justify-center cursor-pointer">
-                                    <Trash2 className="text-orange" />
-                                </button>
-                            </div>
-                            ))}
-
-                            <button
-                            type="button"
-                            onClick={handleAddRole}
-                            className="text-orange flex items-center gap-1 cursor-pointer hover:underline"
-                            >
-                            <Plus />
-                            Ajouter un rôle
+                                {loading ? "" : "Inscrire l'utilisateur"}
                             </button>
                         </div>
-                        </div>
-                        <button className="btn mt-6 w-full" onClick={addUser}>
-                        Inscrire l'utilisateur
-                        </button>
                     </form>
                 </div>
 

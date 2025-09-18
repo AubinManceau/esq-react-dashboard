@@ -16,14 +16,14 @@ import {
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { usePathname } from "next/navigation";
-import { getUserRolesFromToken } from "@/lib/auth";
+import { getUserInformations } from "@/lib/auth";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [submenuUsersOpen, setSubmenuUsersOpen] = useState(false);
   const [submenuPresenceOpen, setSubmenuPresenceOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
-  const [roles, setRoles] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -36,8 +36,12 @@ export default function Sidebar() {
   }
 
   useEffect(() => {
-    const userRoles = getUserRolesFromToken();
-    setRoles(userRoles);
+    const fetchUserInfo = async () => {
+      const userInfo = await getUserInformations();
+      setUserInfo(userInfo);
+    };
+
+    fetchUserInfo();
 
     if (pathname.startsWith("/admin/utilisateurs")) {
       setSubmenuUsersOpen(true);
@@ -47,10 +51,15 @@ export default function Sidebar() {
   }, [pathname]);
 
   const hasAccess = (path) => {
-    if (!roles || roles.length === 0) return false;
+    if (!userInfo || userInfo.user.roles.length === 0) return false;
     const allowedRoles = accessMap[path] || [];
-    return roles.some(r => allowedRoles.includes(r.roleId));
+    return userInfo.user.roles.some(r => allowedRoles.includes(r.roleId));
   };
+
+  const userName = () => {
+    if (!userInfo || !userInfo.user.firstName || !userInfo.user.lastName) return "Utilisateur";
+    return `${userInfo.user.firstName} ${userInfo.user.lastName}`;
+  }
 
   const isActive = (href) => pathname === href;
 
@@ -277,7 +286,7 @@ export default function Sidebar() {
             <LogOut color="white" />
           </div>
           <div className="flex flex-col text-left">
-            <p className="h4">Aubin Manceau</p>
+            <p className="h4">{userName()}</p>
             <span className="logout">Se déconnecter</span>
           </div>
         </button>

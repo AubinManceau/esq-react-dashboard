@@ -16,14 +16,14 @@ import {
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { usePathname } from "next/navigation";
-import { getUserInformations } from "@/lib/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Sidebar() {
+  const { userInfos, clearUser } = useAuth();
   const [open, setOpen] = useState(false);
   const [submenuUsersOpen, setSubmenuUsersOpen] = useState(false);
   const [submenuPresenceOpen, setSubmenuPresenceOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -36,13 +36,6 @@ export default function Sidebar() {
   }
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      const userInfo = await getUserInformations();
-      setUserInfo(userInfo);
-    };
-
-    fetchUserInfo();
-
     if (pathname.startsWith("/admin/utilisateurs")) {
       setSubmenuUsersOpen(true);
     } else if (pathname.startsWith("/admin/presences")) {
@@ -51,15 +44,17 @@ export default function Sidebar() {
   }, [pathname]);
 
   const hasAccess = (path) => {
-    if (!userInfo || userInfo.user.roles.length === 0) return false;
+    if (!userInfos || userInfos?.user?.roles?.length === 0) return false;
     const allowedRoles = accessMap[path] || [];
-    return userInfo.user.roles.some(r => allowedRoles.includes(r.roleId));
+    return userInfos.user.roles.some(r => allowedRoles.includes(r.roleId));
   };
 
   const userName = () => {
-    if (!userInfo || !userInfo.user.firstName || !userInfo.user.lastName) return "Utilisateur";
-    return `${userInfo.user.firstName} ${userInfo.user.lastName}`;
-  }
+    const first = userInfos?.user?.firstName || "";
+    const last = userInfos?.user?.lastName || "";
+    return (first + " " + last).trim() || "Utilisateur";
+  };
+
 
   const isActive = (href) => pathname === href;
 
@@ -79,7 +74,8 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     const res = await logout();
-    if (!res.status === "success") return;
+    if (res.status !== "success") return;
+    clearUser();
     setLogoutModalOpen(false);
     router.push("/");
   };

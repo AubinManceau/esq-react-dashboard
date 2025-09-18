@@ -10,7 +10,7 @@ export default function DetailsUtilisateur({ params }) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
+    const [phone, setPhone] = useState(null);
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [firstNameError, setFirstNameError] = useState("");
@@ -31,7 +31,7 @@ export default function DetailsUtilisateur({ params }) {
                     setFirstName(user.data.user.firstName || "");
                     setLastName(user.data.user.lastName || "");
                     setEmail(user.data.user.email || "");
-                    setPhone(user.data.user.phone || "");
+                    setPhone(user.data.user.phone || null);
                     setRoles(user.data.user.UserRolesCategories || []);
                     setIsActive(user.data.user.isActive || false);
                 } else {

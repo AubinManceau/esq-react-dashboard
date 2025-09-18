@@ -16,22 +16,41 @@ import {
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { usePathname } from "next/navigation";
+import { getUserRolesFromToken } from "@/lib/auth";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [submenuUsersOpen, setSubmenuUsersOpen] = useState(false);
   const [submenuPresenceOpen, setSubmenuPresenceOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [roles, setRoles] = useState([]);
   const pathname = usePathname();
   const router = useRouter();
 
+  const accessMap = {
+    "/admin/utilisateurs": [4],
+    "/admin/articles": [3, 4],
+    "/admin/convocations": [2, 4],
+    "/admin/equipes": [3, 4],
+    "/admin/presences": [2, 4],
+  }
+
   useEffect(() => {
+    const userRoles = getUserRolesFromToken();
+    setRoles(userRoles);
+
     if (pathname.startsWith("/admin/utilisateurs")) {
       setSubmenuUsersOpen(true);
     } else if (pathname.startsWith("/admin/presences")) {
       setSubmenuPresenceOpen(true);
     }
   }, [pathname]);
+
+  const hasAccess = (path) => {
+    if (!roles || roles.length === 0) return false;
+    const allowedRoles = accessMap[path] || [];
+    return roles.some(r => allowedRoles.includes(r.roleId));
+  };
 
   const isActive = (href) => pathname === href;
 
@@ -91,8 +110,8 @@ export default function Sidebar() {
         <nav>
           <div className="bg-orange py-8 mb-2 lg:mb-10 rounded-tr-[15px]">
             <h2 className="!mb-0 pl-6 !font-default-extralight text-white cursor-default">
-              Etoile Sportive{" "}
-              <span className="font-default-medium">Quelainaise</span>
+              Etoile Sportive
+              <span className="font-default-medium"> Quelainaise</span>
             </h2>
           </div>
           <div className="flex flex-col gap-4 px-3">
@@ -110,6 +129,7 @@ export default function Sidebar() {
                 Tableau de bord
               </Link>
             </div>
+            {hasAccess("/admin/utilisateurs") && (
             <div className="nav-link-container">
               <button
                 className="nav-link w-full justify-between cursor-pointer"
@@ -152,7 +172,9 @@ export default function Sidebar() {
                 </Link>
               </div>
             </div>
+            )}
 
+            {hasAccess("/admin/articles") && (
             <div>
               <Link
                 href="/admin/articles"
@@ -167,6 +189,9 @@ export default function Sidebar() {
                 Articles
               </Link>
             </div>
+            )}
+
+            {hasAccess("/admin/presences") && (
             <div className="nav-link-container">
               <button
                 className="nav-link w-full justify-between cursor-pointer"
@@ -209,6 +234,9 @@ export default function Sidebar() {
                 </Link>
               </div>
             </div>
+            )}
+
+            {hasAccess("/admin/equipes") && (
             <div>
               <Link
                 href="/admin/equipes"
@@ -223,6 +251,9 @@ export default function Sidebar() {
                 Équipes
               </Link>
             </div>
+            )}
+
+            {hasAccess("/admin/convocations") && (
             <div>
               <Link
                 href="/admin/convocations"
@@ -237,6 +268,7 @@ export default function Sidebar() {
                 Convocations
               </Link>
             </div>
+            )}
           </div>
         </nav>
 

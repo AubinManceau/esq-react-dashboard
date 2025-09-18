@@ -1,3 +1,5 @@
+"use client"
+
 export default function NotifsCard() {
   return (
     <div className="notif-card">

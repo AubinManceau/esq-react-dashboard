@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo, use, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Ellipsis, ArrowUpDown } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import { getUsers, deleteUser } from "@/lib/user";
 import Link from "next/link";
+import Loading from "../loading";
 
 export default function Utilisateurs() {
   const [users, setUsers] = useState([]);
@@ -114,6 +115,7 @@ export default function Utilisateurs() {
   }
 
   return (
+    <Suspense fallback={<Loading className="w-full h-full" />}>
     <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
         <div>
@@ -250,5 +252,6 @@ export default function Utilisateurs() {
         </div>
       )}
     </div>
+    </Suspense>
   );
 }

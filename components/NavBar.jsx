@@ -31,36 +31,42 @@ export default function NavBar() {
             L'ESQ <ChevronDown size={16} />
           </button>
           <div className="absolute top-full bg-bleu py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-40 flex flex-col">
-            <Link href="/club/actualites" className="dropdown-item">Actualités</Link>
-            <Link href="/club/histoire" className="dropdown-item">Histoire</Link>
-            <Link href="/club/mot-du-president" className="dropdown-item">Mot du Président</Link>
-            <Link href="/club/arbitres" className="dropdown-item">Arbitres</Link>
+            <Link href="/esq/actualites" className="dropdown-item">Actualités</Link>
+            <Link href="/esq/histoire" className="dropdown-item">Histoire</Link>
+            <Link href="/esq/mot-du-president" className="dropdown-item">Mot du Président</Link>
+            <Link href="/esq/arbitres" className="dropdown-item">Arbitres</Link>
           </div>
         </div>
         <div className="relative group">
           <button className="navbar-link flex items-center gap-1">
             Nos équipes <ChevronDown size={16} />
           </button>
-          <div className="absolute top-full bg-bleu py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-40 flex flex-col">
-            <div className="relative">
-              <button className="dropdown-item peer flex justify-between items-center w-full text-left">
+          <div className="absolute top-full left-0 bg-bleu py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-40 flex flex-col">
+            <div className="relative group/seniors">
+              <button className="dropdown-item flex justify-between items-center w-full text-left">
                 Seniors <ChevronDown size={14} />
               </button>
-              <div className="absolute left-full top-0 mt-0 bg-bleu py-2 w-48 opacity-0 invisible peer-hover:opacity-100 peer-focus:opacity-100 peer-hover:visible peer-focus:visible transition-all z-50 flex flex-col whitespace-nowrap">
-                <Link href="/equipes/seniors-1" className="dropdown-item">Équipe 1</Link>
-                <Link href="/equipes/seniors-2" className="dropdown-item">Équipe 2</Link>
+              <div className="absolute left-full top-0 bg-bleu py-2 w-48 opacity-0 invisible group-hover/seniors:opacity-100 group-hover/seniors:visible transition-all z-50 flex flex-col whitespace-nowrap">
+                <Link href="/nos-equipes/seniors-A" className="dropdown-item">Équipe 1</Link>
+                <Link href="/nos-equipes/seniors-B" className="dropdown-item">Équipe 2</Link>
+                <Link href="/nos-equipes/seniors-C" className="dropdown-item">Équipe 3</Link>
               </div>
             </div>
-            <div className="relative">
-              <button className="dropdown-item peer flex justify-between items-center w-full text-left">
+            <div className="relative group/jeunes">
+              <button className="dropdown-item flex justify-between items-center w-full text-left">
                 Jeunes <ChevronDown size={14} />
               </button>
-              <div className="absolute left-full top-0 mt-0 bg-bleu py-2 w-48 opacity-0 invisible peer-hover:opacity-100 peer-focus:opacity-100 peer-hover:visible peer-focus:visible transition-all z-50 flex flex-col whitespace-nowrap">
-                <Link href="/equipes/u18" className="dropdown-item">U18</Link>
+              <div className="absolute left-full top-0 bg-bleu py-2 w-48 opacity-0 invisible group-hover/jeunes:opacity-100 group-hover/jeunes:visible transition-all z-50 flex flex-col whitespace-nowrap">
+                <Link href="/equipes/u17" className="dropdown-item">U17</Link>
                 <Link href="/equipes/u15" className="dropdown-item">U15</Link>
                 <Link href="/equipes/u13" className="dropdown-item">U13</Link>
+                <Link href="/equipes/u11" className="dropdown-item">U11</Link>
+                <Link href="/equipes/u9" className="dropdown-item">U9</Link>
+                <Link href="/equipes/u7" className="dropdown-item">U7</Link>
               </div>
             </div>
+            
+            {/* Liens directs */}
             <Link href="/equipes/feminines" className="dropdown-item">Féminines</Link>
             <Link href="/equipes/futsal" className="dropdown-item">Futsal</Link>
             <Link href="/equipes/veterans" className="dropdown-item">Vétérans</Link>

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const allowedRoles = [2, 3, 4];
+const roleAccessMap = {
+  "/admin/utilisateurs": [4],
+  "/admin/articles": [3, 4],
+  "/admin/convocations": [2, 4],
+  "/admin/equipes": [3, 4],
+  "/admin/presences": [2, 4],
+};
 
 async function verifyToken(token) {
   try {
@@ -32,14 +38,11 @@ export async function middleware(req) {
         credentials: "include",
         body: JSON.stringify({ refreshToken }),
       });
+
       if (refreshRes.ok) {
         const response = NextResponse.next();
-
         const setCookieHeader = refreshRes.headers.get("set-cookie");
-        if (setCookieHeader) {
-          response.headers.set("set-cookie", setCookieHeader);
-        }
-
+        if (setCookieHeader) response.headers.set("set-cookie", setCookieHeader);
         return response;
       }
     } catch {
@@ -57,10 +60,14 @@ export async function middleware(req) {
 
   if (pathname.startsWith("/admin") && payload) {
     const roles = Array.isArray(payload.roles) ? payload.roles : [];
-    const hasAccess = roles.some((r) => allowedRoles.includes(r.roleId));
 
-    if (!hasAccess) {
-      return NextResponse.redirect(new URL("/", req.url));
+    for (const [pathPrefix, allowedRoles] of Object.entries(roleAccessMap)) {
+      if (pathname.startsWith(pathPrefix)) {
+        const hasAccess = roles.some(r => allowedRoles.includes(r.roleId));
+        if (!hasAccess) {
+          return NextResponse.redirect(new URL("/admin", req.url));
+        }
+      }
     }
   }
 

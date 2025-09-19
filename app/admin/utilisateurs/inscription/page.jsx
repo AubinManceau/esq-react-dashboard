@@ -1,7 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Upload, Plus, Trash2 } from "lucide-react";
-import { signup } from "../../../../lib/auth";
+import { bulkSignup, signup } from "../../../../lib/auth";
+import Papa from "papaparse";
+import rolesList from "@/lib/roles";
+import categoriesList from "@/lib/categories";
 
 export default function UtilisateursInscriptions() {
     const [email, setEmail] = useState("");
@@ -17,7 +20,7 @@ export default function UtilisateursInscriptions() {
     const [lastNameError, setLastNameError] = useState("");
     const [roles, setRoles] = useState([{ roleId: null, categoryId: null }]);
     const [rolesError, setRolesError] = useState("");
-    const [fileName, setFileName] = useState(null);
+    const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const handleAddRole = () => {
@@ -44,11 +47,7 @@ export default function UtilisateursInscriptions() {
     };
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            console.log("Fichier sélectionné :", file.name);
-        }
+        setFile(e.target.files[0]);
     };
 
     const addUser = async (e) => {
@@ -109,10 +108,49 @@ export default function UtilisateursInscriptions() {
         setLoading(false);
     };
 
-    const addUsers = (e) => {
+    const bulk = (file) => {
+        return new Promise ((resolve, reject) => {
+            if (!file) return reject({ status: "error", message: "Aucun fichier sélectionné." });
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (resultst) => {
+                    try {
+                        const users = resultst.data.map((row) => ({
+                            firstName: row.firstName,
+                            lastName: row.lastName,
+                            email: row.email,
+                            phone: row.phone || null,
+                            licence: row.licence || null,
+                            rolesCategories: JSON.parse(row.rolesCategories)
+                        }));
+
+                        bulkSignup(users)
+                            .then((res) => resolve(res.data))
+                            .catch((error) => reject({ status: "error", message: error.message }));
+                    } catch (error) {
+                        reject({ status: "error", message: `Erreur lors du traitement des données : ${error}` });
+                    }
+                },
+                error: () => reject({ status: "error", message: "Erreur lors de la lecture du fichier." })
+            });
+        });
+    };
+
+    const addUsers = async (e) => {
         e.preventDefault();
-        console.log("Ajouter plusieurs utilisateurs via fichier CSV");
-    }
+        console.log("Adding users...");
+
+        try {
+            const res = await bulk(file);
+            if (res.status === "success") {
+                setFile(null);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div className="admin-users">
@@ -197,38 +235,34 @@ export default function UtilisateursInscriptions() {
                                     {roles.map((item, index) => (
                                     <div key={index} className="flex justify-between items-center gap-3 bg-orange/5 p-2 rounded-[5px]">
                                         <select
-                                        value={item.roleId}
+                                        value={item.roleId || ""}
                                         onChange={(e) =>
                                             handleChangeRole(index, "roleId", Number(e.target.value))
                                         }
                                         className="border rounded px-2 py-1 w-1/2"
                                         >
-                                        <option value={null}>Sélectionner un rôle</option>
-                                        <option value={1}>Joueur</option>
-                                        <option value={2}>Coach</option>
-                                        <option value={3}>Membre</option>
-                                        <option value={4}>Admin</option>
+                                            <option value={null}>Sélectionner un rôle</option>
+                                            {rolesList.map((role) => (
+                                            <option key={role.id} value={role.id}>
+                                                {role.name}
+                                            </option>
+                                            ))}
                                         </select>
 
                                         {(item.roleId === 1 || item.roleId === 2) && (
                                         <select
-                                            value={item.categoryId}
+                                            value={item.categoryId || ""}
                                             onChange={(e) =>
                                             handleChangeCategory(index, Number(e.target.value))
                                             }
                                             className="border rounded px-2 py-1 w-1/2"
                                         >
                                             <option value={null}>Sélectionner une catégorie</option>
-                                            <option value={1}>U7</option>
-                                            <option value={2}>U9</option>
-                                            <option value={3}>U11</option>
-                                            <option value={4}>U13</option>
-                                            <option value={5}>U15</option>
-                                            <option value={6}>U18</option>
-                                            <option value={7}>Seniors</option>
-                                            <option value={8}>Vétérans</option>
-                                            <option value={9}>Futsal</option>
-                                            <option value={10}>Féminines</option>
+                                            {categoriesList.map((category) => (
+                                            <option key={category.id} value={category.id}>
+                                                {category.name}
+                                            </option>
+                                            ))}
                                         </select>
                                         )}
 
@@ -252,7 +286,7 @@ export default function UtilisateursInscriptions() {
                         </div>
                         <div className="flex flex-col items-center mt-6">
                             {globalError && <p className="error-message text-center mb-2">{globalError}</p>}
-                            <button className="btn flex items-center justify-center gap-2 w-full" onClick={addUser}>
+                            <button type="button" className="btn flex items-center justify-center gap-2 w-full" onClick={addUser}>
                                 {loading && (
                                     <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                 )}
@@ -272,9 +306,9 @@ export default function UtilisateursInscriptions() {
                                 className="opacity-0 absolute w-full h-full cursor-pointer"
                                 onChange={handleFileChange}
                             />
-                            { fileName ? (
+                            { file ? (
                                 <>
-                                    <p className="mb-2">{fileName}</p>
+                                    <p className="mb-2">{file.name}</p>
                                     <p className="text-gray-500">OU</p>
                                     <p className="btn mt-2 !px-4 !py-2">Changer de fichier</p>
                                 </>
@@ -288,7 +322,7 @@ export default function UtilisateursInscriptions() {
                             </>
                             )}
                         </div>
-                        <button className="btn mt-6 w-full" onClick={addUsers}>
+                        <button type="button" className="btn mt-6 w-full" onClick={addUsers}>
                             Inscrire les utilisateurs
                         </button>
                     </form>

@@ -13,13 +13,13 @@ export default function UtilisateursInscriptions() {
     const [firstNameError, setFirstNameError] = useState("");
     const [lastName, setLastName] = useState("");
     const [lastNameError, setLastNameError] = useState("");
-    const [roles, setRoles] = useState([{ roleId: "", categoryId: "" }]);
+    const [roles, setRoles] = useState([{ roleId: null, categoryId: null }]);
     const [rolesError, setRolesError] = useState("");
     const [fileName, setFileName] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const handleAddRole = () => {
-        setRoles([...roles, { roleId: "", categoryId: "" }]);
+        setRoles([...roles, { roleId: null, categoryId: null }]);
     };
 
     const handleRemoveRole = (index) => {
@@ -29,8 +29,8 @@ export default function UtilisateursInscriptions() {
     const handleChangeRole = (index, field, value) => {
         const updated = [...roles];
         updated[index][field] = value;
-        if (field === "roleId" && value !== "1" && value !== "2") {
-            updated[index].categoryId = "";
+        if (field === "roleId" && value !== 1 && value !== 2) {
+            updated[index].categoryId = null;
         }
         setRoles(updated);
     };
@@ -74,7 +74,7 @@ export default function UtilisateursInscriptions() {
             setLastNameError("Le champ nom est requis.");
             hasError = true;
         }
-        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === "1" || role.roleId === "2") && !role.categoryId))) {
+        if (roles.length === 0 || roles.some(role => !role.roleId || ((role.roleId === 1 || role.roleId === 2) && !role.categoryId))) {
             setRolesError("Au moins un rôle valide est requis.");
             hasError = true;
         }
@@ -97,7 +97,7 @@ export default function UtilisateursInscriptions() {
             setPhone("");
             setFirstName("");
             setLastName("");
-            setRoles([{ roleId: "", categoryId: "" }]);
+            setRoles([{ roleId: null, categoryId: null }]);
         } else {
             setGlobalError("Erreur lors de l'ajout de l'utilisateur.");
         }
@@ -178,36 +178,36 @@ export default function UtilisateursInscriptions() {
                                         <select
                                         value={item.roleId}
                                         onChange={(e) =>
-                                            handleChangeRole(index, "roleId", e.target.value)
+                                            handleChangeRole(index, "roleId", Number(e.target.value))
                                         }
                                         className="border rounded px-2 py-1 w-1/2"
                                         >
-                                        <option value="">Sélectionner un rôle</option>
-                                        <option value="1">Joueur</option>
-                                        <option value="2">Coach</option>
-                                        <option value="3">Membre</option>
-                                        <option value="4">Admin</option>
+                                        <option value={null}>Sélectionner un rôle</option>
+                                        <option value={1}>Joueur</option>
+                                        <option value={2}>Coach</option>
+                                        <option value={3}>Membre</option>
+                                        <option value={4}>Admin</option>
                                         </select>
 
-                                        {(item.roleId === "1" || item.roleId === "2") && (
+                                        {(item.roleId === 1 || item.roleId === 2) && (
                                         <select
                                             value={item.categoryId}
                                             onChange={(e) =>
-                                            handleChangeCategory(index, e.target.value)
+                                            handleChangeCategory(index, Number(e.target.value))
                                             }
                                             className="border rounded px-2 py-1 w-1/2"
                                         >
-                                            <option value="">Sélectionner une catégorie</option>
-                                            <option value="1">U7</option>
-                                            <option value="2">U9</option>
-                                            <option value="3">U11</option>
-                                            <option value="4">U13</option>
-                                            <option value="5">U15</option>
-                                            <option value="6">U18</option>
-                                            <option value="7">Seniors</option>
-                                            <option value="8">Vétérans</option>
-                                            <option value="9">Futsal</option>
-                                            <option value="10">Féminines</option>
+                                            <option value={null}>Sélectionner une catégorie</option>
+                                            <option value={1}>U7</option>
+                                            <option value={2}>U9</option>
+                                            <option value={3}>U11</option>
+                                            <option value={4}>U13</option>
+                                            <option value={5}>U15</option>
+                                            <option value={6}>U18</option>
+                                            <option value={7}>Seniors</option>
+                                            <option value={8}>Vétérans</option>
+                                            <option value={9}>Futsal</option>
+                                            <option value={10}>Féminines</option>
                                         </select>
                                         )}
 

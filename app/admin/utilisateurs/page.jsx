@@ -8,11 +8,14 @@ import Pagination from "@/components/Pagination";
 import { getUsers, deleteUser } from "@/lib/user";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import rolesList from "@/lib/roles";
+import categoriesList from "@/lib/categories";
 
 export default function Utilisateurs() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -32,23 +35,28 @@ export default function Utilisateurs() {
       const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
       const matchesName = fullName.includes(search.toLowerCase());
 
-      const roles = user.UserRolesCategories?.map((r) => {
-        switch (r.roleId) {
-          case 4: return "Admin";
-          case 3: return "Membre";
-          case 2: return "Coach";
-          case 1: return "Joueur";
-          default: return "";
-        }
-      }) ?? [];
+      const userRoleIds = user.UserRolesCategories?.map((r) => r.roleId) ?? [];
+      const userRolesNames = userRoleIds.map(
+        (id) => rolesList.find((r) => r.id === id)?.name ?? ""
+      );
 
-      const matchesRole = roleFilter ? roles.includes(roleFilter) : true;
+      const matchesRole = roleFilter ? userRoleIds.includes(Number(roleFilter)) : true;
 
-      user.role = roles;
+      user.role = userRolesNames;
 
-      return matchesName && matchesRole;
+      let matchesCategory = true;
+      if (roleFilter && categoryFilter) {
+        matchesCategory =
+          user.UserRolesCategories?.some(
+            (r) =>
+              r.roleId === Number(roleFilter) &&
+              r.categoryId === Number(categoryFilter)
+          ) ?? false;
+      }
+
+      return matchesName && matchesRole && matchesCategory;
     });
-  }, [users, search, roleFilter]);
+  }, [users, search, roleFilter, categoryFilter]);
 
 
   const handleSort = (key) => {
@@ -139,16 +147,31 @@ export default function Utilisateurs() {
               value={roleFilter}
               name="role"
               onChange={(e) => {
-                setRoleFilter(e.target.value);
+                setRoleFilter(Number(e.target.value));
                 setCurrentPage(1);
               }}
             >
               <option value="">Tous les rôles</option>
-              <option value="Admin">Admin</option>
-              <option value="Membre">Membre</option>
-              <option value="Coach">Coach</option>
-              <option value="Joueur">Joueur</option>
+              {rolesList.map((role) => (
+                <option key={role.id} value={role.id}>{role.name}</option>
+              ))}
             </select>
+
+            {(roleFilter === 1 || roleFilter === 2) && (
+              <select
+                className="px-3 py-2 focus:outline-none bg-white shadow-sm rounded-[5px] border-1 border-black/2"
+                value={categoryFilter}
+                onChange={(e) => {
+                  setCategoryFilter(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="">Toutes les catégories</option>
+                {categoriesList.map((category) => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
+              </select>
+            )}
           </div>
         )}
       </div>

@@ -80,8 +80,6 @@ export default function UserPhotos({ user }) {
         handleUpload(field, null, true);
     };
 
-    console.log("UserPhotos render", user);
-
     return (
         <div className="flex flex-col lg:w-3/10 gap-6">
             <PhotoBlock

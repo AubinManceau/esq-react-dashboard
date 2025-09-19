@@ -6,6 +6,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import PhotosCard from "@/components/adminCards/PhotosCard";
 import { resendConfirmationEmail } from "@/lib/auth";
+import rolesList from "@/lib/roles";
+import categoriesList from "@/lib/categories";
 
 export default function DetailsUtilisateur({ params }) {
     const { id } = use(params);

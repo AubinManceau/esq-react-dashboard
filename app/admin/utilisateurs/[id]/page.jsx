@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { getUserById, updateUserByAdmin } from "@/lib/user";
 import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import PhotosCard from "@/components/adminCards/PhotosCard";
 
 export default function DetailsUtilisateur({ params }) {
     const { id } = use(params);
@@ -12,6 +13,10 @@ export default function DetailsUtilisateur({ params }) {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState(null);
     const [roles, setRoles] = useState([]);
+    const [licence, setLicence] = useState("");
+    const [photo, setPhoto] = useState(null);
+    const [photoCelebration, setPhotoCelebration] = useState(null);
+    const [licenceError, setLicenceError] = useState("");
     const [loading, setLoading] = useState(false);
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
@@ -32,6 +37,9 @@ export default function DetailsUtilisateur({ params }) {
                     setLastName(user.data.user.lastName || "");
                     setEmail(user.data.user.email || "");
                     setPhone(user.data.user.phone || null);
+                    setPhoto(user.data.user.photo || null);
+                    setPhotoCelebration(user.data.user.photo_celebration || null);
+                    setLicence(user.data.user.licence || null);
                     setRoles(user.data.user.UserRolesCategories || []);
                     setIsActive(user.data.user.isActive || false);
                 } else {
@@ -47,7 +55,7 @@ export default function DetailsUtilisateur({ params }) {
     }, [id]);
 
     const handleAddRole = () => {
-        setRoles([...roles, { roleId: "", categoryId: "" }]);
+        setRoles([...roles, { roleId: null, categoryId: null }]);
     };
 
     const handleRemoveRole = (index) => {
@@ -56,16 +64,16 @@ export default function DetailsUtilisateur({ params }) {
 
     const handleChangeRole = (index, field, value) => {
         const updated = [...roles];
-        updated[index][field] = value;
-        if (field === "roleId" && value !== "1" && value !== "2") {
-            updated[index].categoryId = "";
+        updated[index][field] = Number(value);
+        if (field === "roleId" && value !== 1 && value !== 2) {
+            updated[index].categoryId = null;
         }
         setRoles(updated);
     };
 
     const handleChangeCategory = (index, value) => {
         const updated = [...roles];
-        updated[index].categoryId = value;
+        updated[index].categoryId = Number(value);
         setRoles(updated);
     };
 
@@ -73,16 +81,21 @@ export default function DetailsUtilisateur({ params }) {
         e.preventDefault();
         setLoading(true);
 
-        const data = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-            isActive: isActive,
-            rolesCategories: roles,
-        };
+        const formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+        if (phone) formData.append("phone", phone);
+        if (licence) formData.append("licence", licence);
+        formData.append("isActive", isActive);
+        roles.forEach((role, index) => {
+            formData.append(`rolesCategories[${index}][roleId]`, Number(role.roleId));
+            if (role.categoryId) {
+                formData.append(`rolesCategories[${index}][categoryId]`, Number(role.categoryId));
+            }
+        });
 
-        const res = await updateUserByAdmin(id, data);
+        const res = await updateUserByAdmin(id, formData);
         if (res?.status === "success") {
             router.push("/admin/utilisateurs");
         } else {
@@ -93,20 +106,21 @@ export default function DetailsUtilisateur({ params }) {
 
     return (
         <div className="admin-users">
-            <div className="mb-8">
+            <div className="lg:mb-8">
                 <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
             </div>
-            <div className="flex flex-col lg:flex-row gap-6 w-full">
-                <div className="w-7/10 p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
+            <div className="flex flex-col lg:flex-row gap-6 w-full h-full">
+                <div className="lg:w-7/10 md:p-6 p-2 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
                     <form className="register-form">
                         <div className="flex flex-col gap-4">
                             <div className="flex max-md:flex-col gap-4 w-full">
                                 <div className="md:w-[calc(50%-0.5rem)]">
                                     <div className={`flex flex-col relative ${firstName ? "focused" : ""}`}>
-                                        <label htmlFor="first-name">Prénom</label>
+                                        <label htmlFor="first-name">Prénom <span className="text-orange">*</span></label>
                                         <input
                                             type="text"
                                             id="first-name"
+                                            required
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
@@ -115,16 +129,31 @@ export default function DetailsUtilisateur({ params }) {
                                 </div>
                                 <div className="md:w-[calc(50%-0.5rem)]">
                                     <div className={`flex flex-col relative ${lastName ? "focused" : ""}`}>
-                                        <label htmlFor="last-name">Nom</label>
+                                        <label htmlFor="last-name">Nom <span className="text-orange">*</span></label>
                                         <input
                                             type="text"
                                             id="last-name"
+                                            required
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
                                     </div>
                                     {lastNameError && <p className="error-message mt-1">{lastNameError}</p>}
                                 </div>
+                            </div>
+
+                            <div>
+                                <div className={`flex flex-col relative ${email ? "focused" : ""}`}>
+                                    <label htmlFor="email">Email <span className="text-orange">*</span></label>
+                                    <input
+                                    type="email"
+                                    id="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                                {emailError && <p className="error-message mt-1">{emailError}</p>}
                             </div>
 
                             <div>
@@ -141,17 +170,18 @@ export default function DetailsUtilisateur({ params }) {
                             </div>
 
                             <div>
-                                <div className={`flex flex-col relative ${email ? "focused" : ""}`}>
-                                    <label htmlFor="email">Email</label>
+                                <div className={`flex flex-col relative ${licence ? "focused" : ""}`}>
+                                    <label htmlFor="licence">N° de licence</label>
                                     <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    type="text"
+                                    id="licence"
+                                    value={licence}
+                                    onChange={(e) => setLicence(e.target.value)}
                                     />
                                 </div>
-                                {emailError && <p className="error-message mt-1">{emailError}</p>}
+                                {licenceError && <p className="error-message mt-1">{licenceError}</p>}
                             </div>
+
                             <div>
                                 <div className="flex flex-col gap-3 p-4 border rounded-[5px]">
                                     {roles.map((item, index) => (
@@ -159,36 +189,36 @@ export default function DetailsUtilisateur({ params }) {
                                         <select
                                         value={item.roleId}
                                         onChange={(e) =>
-                                            handleChangeRole(index, "roleId", e.target.value)
+                                            handleChangeRole(index, "roleId", Number(e.target.value))
                                         }
                                         className="border rounded px-2 py-1 w-1/2"
                                         >
-                                        <option value="">Sélectionner un rôle</option>
-                                        <option value="1">Joueur</option>
-                                        <option value="2">Coach</option>
-                                        <option value="3">Membre</option>
-                                        <option value="4">Admin</option>
+                                        <option value={null}>Sélectionner un rôle</option>
+                                        <option value={1}>Joueur</option>
+                                        <option value={2}>Coach</option>
+                                        <option value={3}>Membre</option>
+                                        <option value={4}>Admin</option>
                                         </select>
 
-                                        {(String(item.roleId) === "1" || String(item.roleId) === "2") && (
+                                        {(item.roleId === 1 || item.roleId === 2) && (
                                         <select
-                                            value={String(item.categoryId)}
+                                            value={item.categoryId}
                                             onChange={(e) =>
-                                            handleChangeCategory(index, e.target.value)
+                                            handleChangeCategory(index, Number(e.target.value))
                                             }
                                             className="border rounded px-2 py-1 w-1/2"
                                         >
-                                            <option value="">Sélectionner une catégorie</option>
-                                            <option value="1">U7</option>
-                                            <option value="2">U9</option>
-                                            <option value="3">U11</option>
-                                            <option value="4">U13</option>
-                                            <option value="5">U15</option>
-                                            <option value="6">U18</option>
-                                            <option value="7">Seniors</option>
-                                            <option value="8">Vétérans</option>
-                                            <option value="9">Futsal</option>
-                                            <option value="10">Féminines</option>
+                                            <option value={null}>Sélectionner une catégorie</option>
+                                            <option value={1}>U7</option>
+                                            <option value={2}>U9</option>
+                                            <option value={3}>U11</option>
+                                            <option value={4}>U13</option>
+                                            <option value={5}>U15</option>
+                                            <option value={6}>U18</option>
+                                            <option value={7}>Seniors</option>
+                                            <option value={8}>Vétérans</option>
+                                            <option value={9}>Futsal</option>
+                                            <option value={10}>Féminines</option>
                                         </select>
                                         )}
 
@@ -209,15 +239,6 @@ export default function DetailsUtilisateur({ params }) {
                                 </div>
                                 {rolesError && <p className="error-message mt-1">{rolesError}</p>}
                             </div>
-                            <div className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    id="is-active"
-                                    checked={isActive}
-                                    onChange={(e) => setIsActive(e.target.checked)}
-                                />
-                                <label htmlFor="is-active" className="cursor-pointer !relative">Compte actif ?</label>
-                            </div>
                         </div>
                         <div className="flex flex-col items-center mt-6">
                             {globalError && <p className="error-message text-center mb-2">{globalError}</p>}
@@ -230,14 +251,7 @@ export default function DetailsUtilisateur({ params }) {
                         </div>
                     </form>
                 </div>
-                <div className="flex flex-col w-3/10 gap-6">
-                    <div className="w-full p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
-                        <h2>Détails de l'utilisateur {id}</h2>
-                    </div>
-                    <div className="w-full p-6 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
-                        <h2>Détails de l'utilisateur {id}</h2>
-                    </div>
-                </div>
+                <PhotosCard user={{ id, photo, photoCelebration }} />
             </div>
         </div>
     );

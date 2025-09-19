@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { getUserInformations } from "@/lib/auth";
+import Loader from "@/components/Loader";
 
 const AuthContext = createContext(null);
 
@@ -25,6 +26,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   const clearUser = () => setUserInfos(null);
+
+  if (loading) {
+    return <Loader className="w-full h-full" />;
+  }
 
   return (
     <AuthContext.Provider value={{ userInfos, setUserInfos, clearUser, loading }}>

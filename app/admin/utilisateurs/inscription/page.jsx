@@ -9,6 +9,8 @@ export default function UtilisateursInscriptions() {
     const [globalError, setGlobalError] = useState("");
     const [phone, setPhone] = useState("");
     const [phoneError, setPhoneError] = useState("");
+    const [licence, setLicence] = useState("");
+    const [licenceError, setLicenceError] = useState("");
     const [firstName, setFirstName] = useState("");
     const [firstNameError, setFirstNameError] = useState("");
     const [lastName, setLastName] = useState("");
@@ -59,6 +61,7 @@ export default function UtilisateursInscriptions() {
         setFirstNameError("");
         setLastNameError("");
         setRolesError("");
+        setLicenceError("");
         setGlobalError("");
 
         let hasError = false;
@@ -88,6 +91,7 @@ export default function UtilisateursInscriptions() {
             lastName: lastName,
             email: email,
             phone: phone,
+            licence: licence,
             rolesCategories: roles,
         };
 
@@ -97,6 +101,7 @@ export default function UtilisateursInscriptions() {
             setPhone("");
             setFirstName("");
             setLastName("");
+            setLicence("");
             setRoles([{ roleId: null, categoryId: null }]);
         } else {
             setGlobalError("Erreur lors de l'ajout de l'utilisateur.");
@@ -111,7 +116,7 @@ export default function UtilisateursInscriptions() {
 
     return (
         <div className="admin-users">
-            <div className="mb-8">
+            <div className="lg:mb-8">
                 <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
             </div>
 
@@ -122,10 +127,11 @@ export default function UtilisateursInscriptions() {
                             <div className="flex max-md:flex-col gap-4 w-full">
                                 <div className="md:w-[calc(50%-0.5rem)]">
                                     <div className={`flex flex-col relative ${firstName ? "focused" : ""}`}>
-                                        <label htmlFor="first-name">Prénom</label>
+                                        <label htmlFor="first-name">Prénom <span className="text-orange">*</span></label>
                                         <input
                                             type="text"
                                             id="first-name"
+                                            required
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
@@ -134,16 +140,31 @@ export default function UtilisateursInscriptions() {
                                 </div>
                                 <div className="md:w-[calc(50%-0.5rem)]">
                                     <div className={`flex flex-col relative ${lastName ? "focused" : ""}`}>
-                                        <label htmlFor="last-name">Nom</label>
+                                        <label htmlFor="last-name">Nom <span className="text-orange">*</span></label>
                                         <input
                                             type="text"
                                             id="last-name"
+                                            required
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
                                     </div>
                                     {lastNameError && <p className="error-message mt-1">{lastNameError}</p>}
                                 </div>
+                            </div>
+
+                            <div>
+                                <div className={`flex flex-col relative ${email ? "focused" : ""}`}>
+                                    <label htmlFor="email">Email <span className="text-orange">*</span></label>
+                                    <input
+                                    type="email"
+                                    id="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                                {emailError && <p className="error-message mt-1">{emailError}</p>}
                             </div>
 
                             <div>
@@ -160,16 +181,16 @@ export default function UtilisateursInscriptions() {
                             </div>
 
                             <div>
-                                <div className={`flex flex-col relative ${email ? "focused" : ""}`}>
-                                    <label htmlFor="email">Email</label>
+                                <div className={`flex flex-col relative ${licence ? "focused" : ""}`}>
+                                    <label htmlFor="licence">N° de licence</label>
                                     <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    type="text"
+                                    id="licence"
+                                    value={licence}
+                                    onChange={(e) => setLicence(e.target.value)}
                                     />
                                 </div>
-                                {emailError && <p className="error-message mt-1">{emailError}</p>}
+                                {licenceError && <p className="error-message mt-1">{licenceError}</p>}
                             </div>
                             <div>
                                 <div className="flex flex-col gap-3 p-4 border rounded-[5px]">

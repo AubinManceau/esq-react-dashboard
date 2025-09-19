@@ -7,7 +7,7 @@ import { Ellipsis, ArrowUpDown } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import { getUsers, deleteUser } from "@/lib/user";
 import Link from "next/link";
-import Loading from "../loading";
+import Loader from "@/components/Loader";
 
 export default function Utilisateurs() {
   const [users, setUsers] = useState([]);
@@ -115,7 +115,7 @@ export default function Utilisateurs() {
   }
 
   return (
-    <Suspense fallback={<Loading className="w-full h-full" />}>
+    <Suspense fallback={<Loader className="w-full h-full" />}>
     <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
         <div>

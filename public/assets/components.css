@@ -23,7 +23,11 @@ h4, .h4 {
 }
 
 .btn {
-  @apply font-default-semibold bg-orange text-[18px] text-white p-3 rounded-[5px] hover:bg-orange2 transition cursor-pointer;
+  @apply font-default bg-orange text-[18px] text-white px-4 py-2 rounded-[5px] hover:bg-orange2 transition cursor-pointer;
+
+  &.btn-outline {
+    @apply bg-transparent border-2 border-orange text-orange hover:bg-orange2 hover:border-orange2 hover:text-white transition;
+  }
 }
 
 .nav-link {

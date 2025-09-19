@@ -5,13 +5,14 @@ import { getUserById, updateUserByAdmin } from "@/lib/user";
 import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import PhotosCard from "@/components/adminCards/PhotosCard";
+import { resendConfirmationEmail } from "@/lib/auth";
 
 export default function DetailsUtilisateur({ params }) {
     const { id } = use(params);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState(null);
+    const [phone, setPhone] = useState("");
     const [roles, setRoles] = useState([]);
     const [licence, setLicence] = useState("");
     const [photo, setPhoto] = useState(null);
@@ -25,6 +26,7 @@ export default function DetailsUtilisateur({ params }) {
     const [rolesError, setRolesError] = useState("");
     const [globalError, setGlobalError] = useState(null);
     const [isActive, setIsActive] = useState("");
+    const [openModal, setOpenModal] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -36,10 +38,10 @@ export default function DetailsUtilisateur({ params }) {
                     setFirstName(user.data.user.firstName || "");
                     setLastName(user.data.user.lastName || "");
                     setEmail(user.data.user.email || "");
-                    setPhone(user.data.user.phone || null);
+                    setPhone(user.data.user.phone || "");
                     setPhoto(user.data.user.photo || null);
                     setPhotoCelebration(user.data.user.photo_celebration || null);
-                    setLicence(user.data.user.licence || null);
+                    setLicence(user.data.user.licence || "");
                     setRoles(user.data.user.UserRolesCategories || []);
                     setIsActive(user.data.user.isActive || false);
                 } else {
@@ -104,10 +106,75 @@ export default function DetailsUtilisateur({ params }) {
         setLoading(false);
     };
 
+    const handleModalClose = () => {
+        setOpenModal(false);
+    };
+
+    const desactiverUser = async () => {
+        const formData = new FormData();
+        formData.append("isActive", false);
+
+        const res = await updateUserByAdmin(id, formData);
+        if (res?.status === "success") {
+            router.push("/admin/utilisateurs");
+        }
+        handleModalClose();
+    };
+
+    const sendActivationEmail = async () => {
+        setLoading(true);
+        const res = await resendConfirmationEmail(id);
+        if (res?.status === "success") {
+            router.push("/admin/utilisateurs");
+        }
+        handleModalClose();
+        setLoading(false);
+    };
+
+
     return (
+        <>
+        {openModal && (
+            <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                onClick={handleModalClose}
+            >
+                <div
+                    className="bg-white rounded-lg py-6 px-12 max-w-xl"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <h2>{isActive ? "Désactiver l'utilisateur" : "Envoyer un email d'activation"}</h2>
+                    <p className="mb-10">
+                    Êtes-vous bien sûr de vouloir {isActive ? "désactiver" : "envoyer un email d'activation"} cet utilisateur ?
+                    </p>
+                    <div className="flex justify-end gap-4">
+                    <button
+                        className="btn !bg-gray-300 hover:!bg-gray-400 !text-black"
+                        onClick={handleModalClose}
+                    >
+                        Annuler
+                    </button>
+                    <button className="btn" onClick={isActive ? desactiverUser : sendActivationEmail}>
+                        {isActive ? "Désactiver" : "Envoyer l'email"}
+                    </button>
+                    </div>
+                </div>
+            </div>
+        )}
         <div className="admin-users">
-            <div className="lg:mb-8">
+            <div className="flex items-center lg:justify-between lg:mb-8">
                 <h1 className="text-orange max-lg:hidden !font-default-bold">Utilisateurs</h1>
+                <div className="flex max-lg:flex-col gap-2 max-lg:w-full">
+                    {isActive ? (
+                        <button className="btn" onClick={() => setOpenModal(true)}>
+                            Désactiver l'utilisateur
+                        </button>
+                    ) : (
+                        <button className="btn" onClick={() => setOpenModal(true)}>
+                            Envoyer un email d'activation
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="flex flex-col lg:flex-row gap-6 w-full h-full">
                 <div className="lg:w-7/10 md:p-6 p-2 shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5">
@@ -162,7 +229,7 @@ export default function DetailsUtilisateur({ params }) {
                                     <input
                                     type="tel"
                                     id="phone"
-                                    value={phone}
+                                    value={phone || ""}
                                     onChange={(e) => setPhone(e.target.value)}
                                     />
                                 </div>
@@ -175,7 +242,7 @@ export default function DetailsUtilisateur({ params }) {
                                     <input
                                     type="text"
                                     id="licence"
-                                    value={licence}
+                                    value={licence || ""}
                                     onChange={(e) => setLicence(e.target.value)}
                                     />
                                 </div>
@@ -254,5 +321,6 @@ export default function DetailsUtilisateur({ params }) {
                 <PhotosCard user={{ id, photo, photoCelebration }} />
             </div>
         </div>
+        </>
     );
 }

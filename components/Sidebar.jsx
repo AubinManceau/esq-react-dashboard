@@ -169,7 +169,7 @@ export default function Sidebar() {
                 <Link
                   href="/admin/utilisateurs"
                   className={`sub-nav-link ${
-                    isActive("/admin/utilisateurs") ? "active" : ""
+                    isActive("/admin/utilisateurs")  ? "active" : ""
                   }`}
                   onClick={() => setOpen(false)}
                 >

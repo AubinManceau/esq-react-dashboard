@@ -1,0 +1,37 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+thead {
+    & tr {
+        @apply bg-transparent hover:bg-transparent uppercase font-default-light shadow-none border-0;
+    }
+}
+
+tr  {
+    @apply bg-white shadow-sm rounded-[5px] border-1 border-black/2 hover:bg-orange/10 transition-colors border-0;
+
+    & td {
+        @apply py-3 px-4;
+    
+        &:first-child {
+            @apply rounded-[5px_0_0_5px];
+        }
+        &:last-child {
+            @apply rounded-[0_5px_5px_0];
+        }
+    }
+}
+
+.pagination-next, .pagination-previous {
+    @apply px-3 py-1 border border-bleu rounded-md disabled:opacity-20 disabled:border-black hover:bg-bleu/10 text-bleu disabled:text-black cursor-pointer disabled:cursor-default disabled:hover:bg-transparent h-[34px];
+}
+
+[data-slot="dropdown-menu-content"] {
+    @apply bg-white border-1 border-black/2 shadow-sm rounded-[5px];
+
+    & [data-slot="dropdown-menu-item"] {
+        @apply px-3 py-2 hover:bg-orange/10 cursor-pointer;
+    }
+}

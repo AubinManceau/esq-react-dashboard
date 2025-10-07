@@ -1,0 +1,102 @@
+h1, .h1 {
+  @apply font-default-medium text-[30px]/[100%] lg:text-[52px]/[100%];
+
+  & span {
+    @apply font-default-black text-orange;
+  }
+}
+h2, .h2 {
+  @apply font-default-medium text-[24px]/[100%] lg:text-[28px]/[100%] font-semibold mb-4;
+
+  & span {
+    @apply font-default-thin;
+  }
+}
+h3, .h3 {
+  @apply font-default-medium text-[20px]/[100%] lg:text-[20px]/[100%];
+}
+h4, .h4 {
+  @apply font-default-semibold text-[16px]/[100%] lg:text-[16px]/[100%];
+}
+.error-message {
+  @apply font-default text-red-500 text-[13px];
+}
+
+.btn {
+  @apply font-default bg-orange text-[18px] text-white px-4 py-2 rounded-[5px] hover:bg-orange2 transition cursor-pointer;
+
+  &.btn-outline {
+    @apply bg-transparent border-2 border-orange text-orange hover:bg-orange2 hover:border-orange2 hover:text-white transition;
+  }
+}
+
+.nav-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] uppercase flex gap-4 items-center py-3 px-3 w-full rounded-[3px] ;
+
+  &.active .icon {
+    @apply stroke-orange transition;
+  }
+
+  &:hover .icon {
+    @apply stroke-orange transition;
+  }
+}
+
+.nav-link-container:has(.sub-nav-link.active) .icon {
+  @apply stroke-orange;
+}
+
+.sub-nav-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] py-2 px-3 w-full rounded-[3px];
+
+  &.active {
+    @apply text-orange;
+  }
+
+  &:hover {
+    @apply text-orange;
+  }
+}
+.logout {
+  @apply font-default-light text-[13px]/[115%];
+}
+
+.navbar-link {
+  @apply font-default text-[14px]/[115%] lg:text-[16px]/[115%] text-white py-4 px-4 cursor-pointer;
+}
+
+.dropdown-item {
+  @apply text-white px-3 text-left;
+}
+
+.admin-home {
+  @apply flex gap-6 lg:h-full w-full max-lg:flex-col;
+
+  & .number-card {
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 h-[110px] lg:h-1/4 flex items-center justify-center md:justify-start pl-0 py-2 md:pl-4 md:py-0;
+
+    & .category {
+      @apply font-default-semibold text-[16px]/[100%] xl:text-[20px]/[100%] text-center md:text-left;
+    }
+
+    & .number-text {
+      @apply font-default-black text-[40px]/[100%] xl:text-[50px]/[100%] text-center md:text-left;
+    }
+  }
+
+  & .welcome-card {
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 p-6 w-full flex flex-col justify-center;
+  }
+
+  .chart-card {
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 p-4 w-full lg:w-5/8 flex flex-col gap-4;
+  }
+
+  .test-card {
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 p-4 h-[500px] lg:h-5/8 w-full;
+  }
+
+  .notif-card {
+    @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 p-4 h-[200px] lg:h-3/8 w-full;
+  }
+}

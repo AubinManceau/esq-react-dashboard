@@ -109,31 +109,50 @@ export default function UtilisateursInscriptions() {
     };
 
     const bulk = (file) => {
-        return new Promise ((resolve, reject) => {
-            if (!file) return reject({ status: "error", message: "Aucun fichier sélectionné." });
+        return new Promise((resolve, reject) => {
+            if (!file) {
+                return reject({ status: "error", message: "Aucun fichier sélectionné." });
+            }
 
             Papa.parse(file, {
                 header: true,
                 skipEmptyLines: true,
-                complete: (resultst) => {
+                complete: async (results) => {
+                    if (!results || !results.data) {
+                        return reject({ status: "error", message: "Fichier vide ou illisible." });
+                    }
                     try {
-                        const users = resultst.data.map((row) => ({
-                            firstName: row.firstName,
-                            lastName: row.lastName,
-                            email: row.email,
-                            phone: row.phone || null,
-                            licence: row.licence || null,
-                            rolesCategories: JSON.parse(row.rolesCategories)
-                        }));
+                        const users = results.data.map((row, index) => {
+                            let rolesCategories = [];
+                            try {
+                                const cleaned = row.rolesCategories.replace(/""/g, '"');
+                                rolesCategories = JSON.parse(cleaned || "[]");
+                            } catch (e) {
+                                throw new Error(`Ligne ${index + 2} : rolesCategories invalide (${row.rolesCategories})`);
+                            }
 
-                        bulkSignup(users)
-                            .then((res) => resolve(res.data))
-                            .catch((error) => reject({ status: "error", message: error.message }));
+                            return {
+                                firstName: row.firstName?.trim() || null,
+                                lastName: row.lastName?.trim() || null,
+                                email: row.email?.trim() || null,
+                                phone: row.phone?.trim() || null,
+                                licence: row.licence?.trim() || null,
+                                rolesCategories
+                            };
+                        });
+
+                        const res = await bulkSignup(users);
+                        resolve(res);
                     } catch (error) {
-                        reject({ status: "error", message: `Erreur lors du traitement des données : ${error}` });
+                        reject({
+                            status: "error",
+                            message: `Erreur lors du traitement des données : ${error.message}`
+                        });
                     }
                 },
-                error: () => reject({ status: "error", message: "Erreur lors de la lecture du fichier." })
+                error: () => {
+                    reject({ status: "error", message: "Erreur lors de la lecture du fichier." });
+                },
             });
         });
     };
@@ -146,9 +165,12 @@ export default function UtilisateursInscriptions() {
             const res = await bulk(file);
             if (res.status === "success") {
                 setFile(null);
+                console.log("Import réussi !");
+            } else {
+                console.warn("Erreur lors de l’import :", res);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Erreur bulk signup :", error);
         }
     };
 

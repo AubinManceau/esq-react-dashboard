@@ -1,10 +1,5 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-
-export default function ReinitialiserPage() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+export default function ReinitialiserPage({ searchParams }) {
+  const token = searchParams?.token || null;
 
   return (
     <div>

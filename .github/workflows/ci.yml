@@ -20,6 +20,14 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
+            # Ajouter Node, npm et PM2 au PATH si nécessaire
+            export PATH=$PATH:/usr/bin:/usr/local/bin
+
+            # Vérifier les versions pour debug
+            node -v
+            npm -v
+            pm2 -v
+
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
             npm install

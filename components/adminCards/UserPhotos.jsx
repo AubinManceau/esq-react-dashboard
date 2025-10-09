@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { updateUserByAdmin } from "@/lib/user";
+import { updateUserByAdmin, getUserById } from "@/lib/user";
 import { Upload, X } from "lucide-react";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -57,7 +59,7 @@ const PhotoBlock = ({ label, initialPhoto, onUpload, onDelete }) => {
   );
 };
 
-export default function UserPhotos({ user }) {
+export default function UserPhotos({ id, photo, photoCelebration }) {
     const handleUpload = async (field, file, isDelete = false) => {
         try {
             const formData = new FormData();
@@ -67,7 +69,7 @@ export default function UserPhotos({ user }) {
                 formData.append(field, file);
             }
 
-            const res = await updateUserByAdmin(user.id, formData);
+            const res = await updateUserByAdmin(id, formData);
             if (res?.status !== "success") {
                 console.error("Erreur lors de la mise à jour de la photo");
             }
@@ -84,13 +86,13 @@ export default function UserPhotos({ user }) {
         <div className="flex flex-col lg:w-3/10 gap-6">
             <PhotoBlock
                 label="Photo principale"
-                initialPhoto={user.photo ? `${API_BASE_URL}/users/${user.photo}` : null}
+                initialPhoto={photo ? `${API_BASE_URL}/users/${photo}` : null}
                 onUpload={(file) => handleUpload("photo", file)}
                 onDelete={() => handleDelete("photo")}
             />
             <PhotoBlock
                 label="Photo de célébration"
-                initialPhoto={user.photoCelebration ? `${API_BASE_URL}/users/${user.photoCelebration}` : null}
+                initialPhoto={photoCelebration ? `${API_BASE_URL}/users/${photoCelebration}` : null}
                 onUpload={(file) => handleUpload("photo_celebration", file)}
                 onDelete={() => handleDelete("photo_celebration")}
             />

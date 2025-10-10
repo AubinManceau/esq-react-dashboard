@@ -68,7 +68,12 @@ export async function middleware(req) {
 
     const roles = Array.isArray(payload.roles) ? payload.roles : [];
 
-    if (roles.some(r => r.roleId === 1)) return NextResponse.redirect(new URL("/", req.url));
+    if (roles.some(r => r.roleId === 1)) {
+      const response = NextResponse.redirect(new URL("/", req.url));
+      response.cookies.delete("token", { path: "/" });
+      response.cookies.delete("refreshToken", { path: "/" });
+      return response;
+    }
 
     for (const [pathPrefix, allowedRoles] of Object.entries(roleAccessMap)) {
       if (pathname.startsWith(pathPrefix) && !roles.some(r => allowedRoles.includes(r.roleId))) {

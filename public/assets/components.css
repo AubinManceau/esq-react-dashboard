@@ -100,3 +100,19 @@ h4, .h4 {
     @apply shadow-md rounded-[10px] lg:rounded-[15px] border-1 border-black/5 p-4 h-[200px] lg:h-3/8 w-full;
   }
 }
+
+.tabs {
+  @apply gap-3;
+  .tablist {
+    @apply !p-0 flex justify-between gap-4 bg-white h-full w-full border-1 border-black/5 shadow-sm rounded-none rounded-t-[10px];
+    .tab {
+      @apply py-4 px-10 !rounded-none !rounded-t-[10px] border-0 border-b-6 border-white cursor-pointer;
+      &[data-state="active"] {
+        @apply border-0 border-b-6 border-orange shadow-none;
+      }
+    }
+  }
+  .tab-content {
+    @apply flex-auto bg-white rounded-b-[10px] border-1 border-black/5 shadow-sm;
+  }
+}

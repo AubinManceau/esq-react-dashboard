@@ -19,13 +19,12 @@ async function verifyToken(token) {
   }
 }
 
-async function attemptRefresh(req, refreshToken) {
+async function attemptRefresh(refreshToken) {
   try {
     const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-client-type": "web" },
       body: JSON.stringify({ refreshToken }),
-      credentials: "include",
     });
 
     if (!refreshRes.ok) return null;
@@ -45,7 +44,7 @@ export async function middleware(req) {
   let payload = token ? await verifyToken(token) : null;
 
   if (!payload && refreshToken) {
-    const newToken = await attemptRefresh(req, refreshToken);
+    const newToken = await attemptRefresh(refreshToken);
     if (newToken) {
       const response = NextResponse.next();
       response.cookies.set("token", newToken, {
@@ -60,24 +59,27 @@ export async function middleware(req) {
 
   if (pathname.startsWith("/login")) {
     if (payload) return NextResponse.redirect(new URL("/admin", req.url));
-    return NextResponse.next(); // sinon autoriser login
+    return NextResponse.next();
   }
 
   if (pathname.startsWith("/admin")) {
     if (!payload) return NextResponse.redirect(new URL("/login", req.url));
 
-    const roles = Array.isArray(payload.roles) ? payload.roles : [];
+    const roles = Array.isArray(payload?.roles) ? payload.roles : [];
 
     if (roles.some(r => r.roleId === 1)) {
       const response = NextResponse.redirect(new URL("/", req.url));
-      response.cookies.delete("token", { path: "/" });
-      response.cookies.delete("refreshToken", { path: "/" });
+      response.cookies.delete("token");
+      response.cookies.delete("refreshToken");
       return response;
     }
 
     for (const [pathPrefix, allowedRoles] of Object.entries(roleAccessMap)) {
-      if (pathname.startsWith(pathPrefix) && !roles.some(r => allowedRoles.includes(r.roleId))) {
-        return NextResponse.redirect(new URL("/admin", req.url));
+      if (pathname.startsWith(pathPrefix)) {
+        const hasAccess = roles.some(r => allowedRoles.includes(r.roleId));
+        if (!hasAccess) {
+          return NextResponse.redirect(new URL("/admin", req.url));
+        }
       }
     }
   }
@@ -87,4 +89,5 @@ export async function middleware(req) {
 
 export const config = {
   matcher: ["/admin/:path*", "/login"],
+  runtime: "nodejs",
 };

@@ -215,7 +215,7 @@ export default function UserForm({ id = null, initialFirstName = "", initialLast
                     <div>
                         <div className="flex flex-col gap-3 p-4 border rounded-[5px]">
                             {roles.map((item, index) => (
-                            <div key={index} className="flex justify-between items-center gap-3 bg-orange/5 p-2 rounded-[5px]">
+                            <div key={item.id} className="flex justify-between items-center gap-3 bg-orange/5 p-2 rounded-[5px]">
                                 <select
                                 value={item.roleId || ""}
                                 onChange={(e) =>

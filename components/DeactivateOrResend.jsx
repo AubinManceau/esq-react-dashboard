@@ -4,9 +4,12 @@ import { useState } from "react";
 import { updateUserByAdmin } from "@/lib/user";
 import { useRouter } from "next/navigation";
 import { resendConfirmationEmail } from "@/lib/auth";
+import CustomAlert from "./CustomAlert";
 
 export default function DeactivateOrResend({ id, isActive }) {
     const [openModal, setOpenModal] = useState(false);
+    const [globalError, setGlobalError] = useState("");
+    const [success, setSuccess] = useState("");
     const router = useRouter();
 
     const handleModalClose = () => {
@@ -14,26 +17,38 @@ export default function DeactivateOrResend({ id, isActive }) {
     };
 
     const desactiverUser = async () => {
+        setGlobalError("");
+        setSuccess("");
+
         const formData = new FormData();
         formData.append("isActive", false);
 
         const res = await updateUserByAdmin(id, formData);
         if (res?.status === "success") {
-            router.push("/admin/utilisateurs");
+            setSuccess("Utilisateur désactivé avec succès.");
+        } else {
+            setGlobalError("Une erreur est survenue. Veuillez réessayer.");
         }
         handleModalClose();
     };
 
     const sendActivationEmail = async () => {
+        setGlobalError("");
+        setSuccess("");
+        
         const res = await resendConfirmationEmail(id);
         if (res?.status === "success") {
-            router.push("/admin/utilisateurs");
+            setSuccess("Email de confirmation renvoyé avec succès.");
+        } else {
+            setGlobalError("Une erreur est survenue. Veuillez réessayer.");
         }
         handleModalClose();
     };
 
     return (
         <>
+        {globalError && <CustomAlert type="error" title="Erreur" description={globalError} />}
+        {success && <CustomAlert type="success" title="Succès" description={success} />}
         {openModal && (
             <div
                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"

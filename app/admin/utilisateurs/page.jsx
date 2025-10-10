@@ -40,19 +40,22 @@ export default function Utilisateurs() {
         (id) => rolesList.find((r) => r.id === id)?.name ?? ""
       );
 
-      const matchesRole = roleFilter ? userRoleIds.includes(Number(roleFilter)) : true;
+      const matchesRole = roleFilter
+        ? userRoleIds.map(Number).includes(Number(roleFilter))
+        : true;
 
       user.role = userRolesNames;
 
       let matchesCategory = true;
       if (roleFilter && categoryFilter) {
         matchesCategory =
-          user.UserRolesCategories?.some(
-            (r) =>
-              r.roleId === Number(roleFilter) &&
-              r.categoryId === Number(categoryFilter)
-          ) ?? false;
+          user.UserRolesCategories?.some((r) => {
+            if (r.roleId !== Number(roleFilter)) return false;
+            if (!r.categoryId) return true;
+            return r.categoryId === Number(categoryFilter);
+          }) ?? false;
       }
+
 
       return matchesName && matchesRole && matchesCategory;
     });
@@ -226,7 +229,7 @@ export default function Utilisateurs() {
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <div className="inline-flex justify-end px-2 py-1 bg-bleu/5 rounded-md w-fit cursor-pointer">
-                          <Ellipsis color="#000066" />
+                          <Ellipsis color="black" />
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>

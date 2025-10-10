@@ -10,8 +10,10 @@ import Link from "next/link";
 import Loader from "@/components/Loader";
 import rolesList from "@/lib/roles";
 import categoriesList from "@/lib/categories";
+import CustomAlert from "@/components/CustomAlert";
 
 export default function Utilisateurs() {
+  const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
@@ -104,6 +106,7 @@ export default function Utilisateurs() {
   }, [sortedUsers, currentPage, itemsPerPage]);
 
   const handleDelete = async () => {
+    setError(null);
     if (!userToDelete) return;
     try {
       const res = await deleteUser(userToDelete);
@@ -112,10 +115,10 @@ export default function Utilisateurs() {
         setUserToDelete(null);
         setDeleteModalOpen(false);
       } else {
-        console.error("Erreur lors de la suppression de l'utilisateur");
+        setError("Une erreur est survenue lors de la suppression.");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      setError("Une erreur est survenue lors de la suppression.");
     }
     setUserToDelete(null);
     setDeleteModalOpen(false);
@@ -126,6 +129,8 @@ export default function Utilisateurs() {
   }
 
   return (
+    <>
+    {error && <CustomAlert type="error" title="Erreur" description={error} />}
     <Suspense fallback={<Loader className="w-full h-full" />}>
     <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
@@ -279,5 +284,6 @@ export default function Utilisateurs() {
       )}
     </div>
     </Suspense>
+    </>
   );
 }

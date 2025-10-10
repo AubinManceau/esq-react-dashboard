@@ -1,6 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { updateUserByAdmin } from "@/lib/user";
 import { Upload, X } from "lucide-react";
+import CustomAlert from "../CustomAlert";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const PhotoBlock = ({ label, initialPhoto, onUpload, onDelete }) => {
@@ -57,8 +60,11 @@ const PhotoBlock = ({ label, initialPhoto, onUpload, onDelete }) => {
   );
 };
 
-export default function UserPhotos({ user }) {
+export default function UserPhotos({ id, photo, photoCelebration }) {
+    const [globalError, setGlobalError] = useState("");
+
     const handleUpload = async (field, file, isDelete = false) => {
+        setGlobalError("");
         try {
             const formData = new FormData();
             if (isDelete) {
@@ -67,12 +73,12 @@ export default function UserPhotos({ user }) {
                 formData.append(field, file);
             }
 
-            const res = await updateUserByAdmin(user.id, formData);
+            const res = await updateUserByAdmin(id, formData);
             if (res?.status !== "success") {
-                console.error("Erreur lors de la mise à jour de la photo");
+                setGlobalError("Erreur lors de la mise à jour de la photo.");
             }
         } catch (err) {
-            console.error(err);
+            setGlobalError("Erreur lors de la mise à jour de la photo.");
         }
     };
 
@@ -81,19 +87,22 @@ export default function UserPhotos({ user }) {
     };
 
     return (
-        <div className="flex flex-col lg:w-3/10 gap-6">
-            <PhotoBlock
-                label="Photo principale"
-                initialPhoto={user.photo ? `${API_BASE_URL}/users/${user.photo}` : null}
-                onUpload={(file) => handleUpload("photo", file)}
-                onDelete={() => handleDelete("photo")}
-            />
-            <PhotoBlock
-                label="Photo de célébration"
-                initialPhoto={user.photoCelebration ? `${API_BASE_URL}/users/${user.photoCelebration}` : null}
-                onUpload={(file) => handleUpload("photo_celebration", file)}
-                onDelete={() => handleDelete("photo_celebration")}
-            />
-        </div>
+        <>
+          {globalError && <CustomAlert type="error" title="Erreur" description={globalError} />}
+          <div className="flex flex-col lg:w-3/10 gap-6">
+              <PhotoBlock
+                  label="Photo principale"
+                  initialPhoto={photo ? `${API_BASE_URL}/users/${photo}` : null}
+                  onUpload={(file) => handleUpload("photo", file)}
+                  onDelete={() => handleDelete("photo")}
+              />
+              <PhotoBlock
+                  label="Photo de célébration"
+                  initialPhoto={photoCelebration ? `${API_BASE_URL}/users/${photoCelebration}` : null}
+                  onUpload={(file) => handleUpload("photo_celebration", file)}
+                  onDelete={() => handleDelete("photo_celebration")}
+              />
+          </div>
+        </>
     );
 }

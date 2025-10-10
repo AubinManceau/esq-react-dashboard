@@ -10,8 +10,10 @@ import Link from "next/link";
 import Loader from "@/components/Loader";
 import rolesList from "@/lib/roles";
 import categoriesList from "@/lib/categories";
+import CustomAlert from "@/components/CustomAlert";
 
 export default function Utilisateurs() {
+  const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
@@ -40,19 +42,22 @@ export default function Utilisateurs() {
         (id) => rolesList.find((r) => r.id === id)?.name ?? ""
       );
 
-      const matchesRole = roleFilter ? userRoleIds.includes(Number(roleFilter)) : true;
+      const matchesRole = roleFilter
+        ? userRoleIds.map(Number).includes(Number(roleFilter))
+        : true;
 
       user.role = userRolesNames;
 
       let matchesCategory = true;
       if (roleFilter && categoryFilter) {
         matchesCategory =
-          user.UserRolesCategories?.some(
-            (r) =>
-              r.roleId === Number(roleFilter) &&
-              r.categoryId === Number(categoryFilter)
-          ) ?? false;
+          user.UserRolesCategories?.some((r) => {
+            if (r.roleId !== Number(roleFilter)) return false;
+            if (!r.categoryId) return true;
+            return r.categoryId === Number(categoryFilter);
+          }) ?? false;
       }
+
 
       return matchesName && matchesRole && matchesCategory;
     });
@@ -101,6 +106,7 @@ export default function Utilisateurs() {
   }, [sortedUsers, currentPage, itemsPerPage]);
 
   const handleDelete = async () => {
+    setError(null);
     if (!userToDelete) return;
     try {
       const res = await deleteUser(userToDelete);
@@ -109,10 +115,10 @@ export default function Utilisateurs() {
         setUserToDelete(null);
         setDeleteModalOpen(false);
       } else {
-        console.error("Erreur lors de la suppression de l'utilisateur");
+        setError("Une erreur est survenue lors de la suppression.");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      setError("Une erreur est survenue lors de la suppression.");
     }
     setUserToDelete(null);
     setDeleteModalOpen(false);
@@ -123,6 +129,8 @@ export default function Utilisateurs() {
   }
 
   return (
+    <>
+    {error && <CustomAlert type="error" title="Erreur" description={error} />}
     <Suspense fallback={<Loader className="w-full h-full" />}>
     <div className="admin-users">
       <div className="flex items-center lg:justify-between mb-6">
@@ -226,7 +234,7 @@ export default function Utilisateurs() {
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <div className="inline-flex justify-end px-2 py-1 bg-bleu/5 rounded-md w-fit cursor-pointer">
-                          <Ellipsis color="#000066" />
+                          <Ellipsis color="black" />
                         </div>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
@@ -276,5 +284,6 @@ export default function Utilisateurs() {
       )}
     </div>
     </Suspense>
+    </>
   );
 }

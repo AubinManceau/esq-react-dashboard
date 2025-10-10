@@ -30,20 +30,28 @@ export async function middleware(req) {
     try {
       const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "x-client-type": "web",
-        },
-        credentials: "include",
+        headers: { "Content-Type": "application/json", "x-client-type": "web" },
         body: JSON.stringify({ refreshToken }),
+        credentials: "include"
       });
 
       if (refreshRes.ok) {
+        const data = await refreshRes.json();
+        const newToken = data.token;
+
+        if (!newToken) return NextResponse.redirect(new URL("/login", req.url));
+
         const response = NextResponse.next();
-        const setCookieHeader = refreshRes.headers.get("set-cookie");
-        if (setCookieHeader) response.headers.set("set-cookie", setCookieHeader);
+        response.cookies.set("token", newToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+          maxAge: 15 * 60
+        });
+
         return response;
+      } else {
+        return NextResponse.redirect(new URL("/login", req.url));
       }
     } catch {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -60,6 +68,10 @@ export async function middleware(req) {
 
   if (pathname.startsWith("/admin") && payload) {
     const roles = Array.isArray(payload.roles) ? payload.roles : [];
+
+    if (roles.some(r => r.roleId === 1)) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
 
     for (const [pathPrefix, allowedRoles] of Object.entries(roleAccessMap)) {
       if (pathname.startsWith(pathPrefix)) {

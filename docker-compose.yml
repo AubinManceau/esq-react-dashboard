@@ -1,0 +1,25 @@
+services:
+  next-app:
+    build:
+      context: .
+      args:
+        NODE_ENV: ${NODE_ENV}
+    container_name: app_esq
+    networks:
+      - traefik_net
+    environment:
+      NODE_ENV: ${NODE_ENV}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: >
+      sh -c 'if [ "$NODE_ENV" = "production" ]; then npm start; else npm run dev; fi'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_esq.rule=Host(`${WEB_DOMAIN}`)"
+      - "traefik.http.routers.app_esq.entrypoints=websecure"
+      - "traefik.http.routers.app_esq.tls.certresolver=resolver"
+
+networks:
+  traefik_net:
+    external: true

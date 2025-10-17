@@ -24,6 +24,7 @@ async function attemptRefresh(refreshToken) {
     const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-client-type": "web" },
+      credentials: "include",
       body: JSON.stringify({ refreshToken }),
     });
 
@@ -50,6 +51,7 @@ export async function middleware(req) {
       response.cookies.set("token", newToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
         path: "/",
         maxAge: 15 * 60,
       });
@@ -58,12 +60,16 @@ export async function middleware(req) {
   }
 
   if (pathname.startsWith("/login")) {
-    if (payload) return NextResponse.redirect(new URL("/admin", req.url));
+    if (payload) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
     return NextResponse.next();
   }
 
   if (pathname.startsWith("/admin")) {
-    if (!payload) return NextResponse.redirect(new URL("/login", req.url));
+    if (!payload) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
 
     const roles = Array.isArray(payload?.roles) ? payload.roles : [];
 

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { jwtVerify } from "jose";
 
 const roleAccessMap = {
   "/admin/utilisateurs": [4],
@@ -9,61 +8,44 @@ const roleAccessMap = {
   "/admin/presences": [2, 4],
 };
 
-async function verifyToken(token) {
-  try {
-    const secretKey = new TextEncoder().encode(process.env.SECRET_KEY_ACCESS_TOKEN);
-    const { payload } = await jwtVerify(token, secretKey);
-    return payload;
-  } catch {
-    return null;
-  }
-}
+export async function middleware(req) {
+  const { pathname } = req.nextUrl;
+  const cookieHeader = req.headers.get("cookie");
 
-async function attemptRefresh(refreshToken) {
+  let payload = null;
+  let responseFromApi = null;
+
   try {
-    const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`, {
+    responseFromApi = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-token`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-client-type": "web" },
-      body: JSON.stringify({ refreshToken }),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "x-client-type": "web",
+        "cookie": cookieHeader,
+      },
+      credentials: "include",
     });
 
-    if (!refreshRes.ok) return null;
-
-    const data = await refreshRes.json();
-    return data.token || null;
-  } catch {
-    return null;
-  }
-}
-
-export async function middleware(req) {
-  const token = req.cookies.get("token")?.value;
-  const refreshToken = req.cookies.get("refreshToken")?.value;
-  const { pathname } = req.nextUrl;
-
-  let payload = token ? await verifyToken(token) : null;
-
-  if (!payload && refreshToken) {
-    const newToken = await attemptRefresh(refreshToken);
-    if (newToken) {
-      const response = NextResponse.next();
-      response.cookies.set("token", newToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 15 * 60,
-      });
-      return response;
+    if (responseFromApi.ok) {
+      const data = await responseFromApi.json();
+      payload = data.data;
     }
+  } catch (error) {
+    console.error("Erreur middleware verify-token:", error);
   }
 
   if (pathname.startsWith("/login")) {
-    if (payload) return NextResponse.redirect(new URL("/admin", req.url));
+    if (payload) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
     return NextResponse.next();
   }
 
   if (pathname.startsWith("/admin")) {
-    if (!payload) return NextResponse.redirect(new URL("/login", req.url));
+    if (!payload) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
 
     const roles = Array.isArray(payload?.roles) ? payload.roles : [];
 
@@ -84,7 +66,13 @@ export async function middleware(req) {
     }
   }
 
-  return NextResponse.next();
+  const nextResponse = NextResponse.next();
+  const setCookieHeaders = responseFromApi?.headers?.get("set-cookie");
+  if (setCookieHeaders) {
+    nextResponse.headers.set("set-cookie", setCookieHeaders);
+  }
+
+  return nextResponse;
 }
 
 export const config = {

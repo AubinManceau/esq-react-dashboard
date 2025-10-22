@@ -19,16 +19,16 @@ export async function middleware(req) {
     responseFromApi = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-token`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "Accept": "application/json",
         "x-client-type": "web",
-        "cookie": cookieHeader,
+        "cookie": cookieHeader || "",
       },
       credentials: "include",
     });
 
     if (responseFromApi.ok) {
       const data = await responseFromApi.json();
+      console.log("Réponse backend verify-token:", data);
       payload = data.data;
     }
   } catch (error) {

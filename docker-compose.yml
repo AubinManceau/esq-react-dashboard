@@ -1,5 +1,6 @@
+name: esq-react-dashboard
 services:
-  next-app:
+  app_esq:
     build:
       context: .
       args:

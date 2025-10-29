@@ -23,6 +23,8 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd ${{ secrets.PROJECT_PATH }}
-            git pull origin master
+            git fetch origin master
+            git reset --hard origin/master
             docker compose down
             docker compose up -d --build
+            docker image prune -f

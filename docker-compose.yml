@@ -4,7 +4,6 @@ services:
       context: .
       args:
         NODE_ENV: ${NODE_ENV}
-    container_name: app_esq
     networks:
       - traefik_net
     environment:

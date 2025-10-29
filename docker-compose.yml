@@ -16,6 +16,8 @@ services:
       - "traefik.http.routers.app_esq.rule=Host(`${WEB_DOMAIN}`)"
       - "traefik.http.routers.app_esq.entrypoints=websecure"
       - "traefik.http.routers.app_esq.tls.certresolver=resolver"
+      - "traefik.http.services.app_esq.loadbalancer.server.port=4000"
+
 
 networks:
   traefik_net:

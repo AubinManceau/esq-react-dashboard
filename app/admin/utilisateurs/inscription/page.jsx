@@ -1,3 +1,5 @@
+"use client";
+
 import UserForm from "@/components/UserForm";
 import BulkUserForm from "@/components/BulkUserForm";
 import { useProtectedRoute } from "@/contexts/useProtectedRoute";

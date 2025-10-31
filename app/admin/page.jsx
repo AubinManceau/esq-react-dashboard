@@ -1,10 +1,13 @@
-import WelcomeCard from "../../components/adminCards/WelcomeCard";
-import StatsCard from "../../components/adminCards/StatsCard";
-import NotifsCard from "../../components/adminCards/NotifsCard";
+import WelcomeCard from "@/components/adminCards/WelcomeCard";
+import StatsCard from "@/components/adminCards/StatsCard";
+import NotifsCard from "@/components/adminCards/NotifsCard";
 import Loader from "@/components/Loader";
+import { useProtectedRoute } from "@/contexts/useProtectedRoute";
 import { Suspense } from "react";
 
 export default function Dashboard() {
+  useProtectedRoute();
+
   return (
     <div className="admin-home">
       <div className="flex flex-col gap-8 w-full lg:w-6/10">

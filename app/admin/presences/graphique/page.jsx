@@ -1,4 +1,8 @@
+import { useProtectedRoute } from "@/contexts/useProtectedRoute";
+
 export default function PresencesGraphique() {
+    useProtectedRoute();
+
     return (
         <div className="admin-presences">
             <div className="flex items-center lg:justify-between mb-6">

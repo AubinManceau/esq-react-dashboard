@@ -26,7 +26,15 @@ export const useProtectedRoute = () => {
     );
 
     if (!isAllowed) {
-      router.replace("/admin");
+      const hasAdminAccess = userInfos.user.roles.some((r) =>
+        accessMap["/admin"]?.includes(r.roleId)
+      );
+
+      if (hasAdminAccess) {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     }
   }, [userInfos, pathname, router]);
 };

@@ -1,3 +1,4 @@
+"use client";
 import TeamCrud from "@/components/TeamCrud";
 import { useProtectedRoute } from "@/contexts/useProtectedRoute";
 

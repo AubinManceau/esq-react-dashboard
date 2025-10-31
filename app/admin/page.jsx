@@ -1,3 +1,5 @@
+"use client";
+
 import WelcomeCard from "@/components/adminCards/WelcomeCard";
 import StatsCard from "@/components/adminCards/StatsCard";
 import NotifsCard from "@/components/adminCards/NotifsCard";

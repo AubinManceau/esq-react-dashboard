@@ -1,3 +1,4 @@
+"use client";
 import { useProtectedRoute } from "@/contexts/useProtectedRoute";
 
 export default function Articles() {

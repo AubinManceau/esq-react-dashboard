@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import accessMap from "@/lib/adminAccess";
 
 export const useProtectedRoute = () => {
-  const { userInfos } = useAuth();
+  const { userInfos, clearUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -31,6 +31,7 @@ export const useProtectedRoute = () => {
       );
 
       if (hasAdminAccess) {
+        clearUser();
         router.replace("/admin");
       } else {
         router.replace("/");

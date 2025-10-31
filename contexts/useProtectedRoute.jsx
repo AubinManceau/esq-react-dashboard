@@ -31,9 +31,9 @@ export const useProtectedRoute = () => {
       );
 
       if (hasAdminAccess) {
-        clearUser();
         router.replace("/admin");
       } else {
+        clearUser();
         router.replace("/");
       }
     }

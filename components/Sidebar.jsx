@@ -70,9 +70,7 @@ export default function Sidebar() {
   };
 
   const handleLogout = async () => {
-    const res = await logout();
-    if (res.status !== "success") return;
-    clearUser();
+    await clearUser();
     setLogoutModalOpen(false);
     router.push("/");
   };

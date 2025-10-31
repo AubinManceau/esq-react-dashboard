@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { getUserInformations } from "@/lib/auth";
+import { getUserInformations, logout } from "@/lib/auth";
 import Loader from "@/components/Loader";
 
 const AuthContext = createContext(null);
@@ -25,7 +25,14 @@ export function AuthProvider({ children }) {
     loadProfile();
   }, []);
 
-  const clearUser = () => setUserInfos(null);
+  const clearUser = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+    setUserInfos(null);
+  };
 
   if (loading) {
     return <Loader className="w-full h-full" />;

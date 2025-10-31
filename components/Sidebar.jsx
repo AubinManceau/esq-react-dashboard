@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import accessMap from "@/lib/adminAccess";
 
 export default function Sidebar() {
   const { userInfos, clearUser } = useAuth();
@@ -26,14 +27,6 @@ export default function Sidebar() {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-
-  const accessMap = {
-    "/admin/utilisateurs": [4],
-    "/admin/articles": [3, 4],
-    "/admin/convocations": [2, 4],
-    "/admin/equipes": [3, 4],
-    "/admin/presences": [2, 4],
-  }
 
   useEffect(() => {
     if (pathname.startsWith("/admin/utilisateurs")) {
@@ -50,11 +43,15 @@ export default function Sidebar() {
   };
 
   const userName = () => {
-    const first = userInfos?.user?.firstName || "";
-    const last = userInfos?.user?.lastName || "";
-    return (first + " " + last).trim() || "Utilisateur";
+    const first = userInfos?.user?.firstName;
+    const last = userInfos?.user?.lastName;
+    if (first && last) {
+      return (first + " " + last).trim();
+    } else {
+      router.replace("/login");
+      return;
+    }
   };
-
 
   const isActive = (href) => pathname === href;
 

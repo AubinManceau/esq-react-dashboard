@@ -1,14 +1,21 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function WelcomeCard() {
   const { userInfos } = useAuth();
+  const router = useRouter();
   
   const userName = () => {
-    const first = userInfos?.user?.firstName || "";
-    const last = userInfos?.user?.lastName || "";
-    return (first + " " + last).trim() || "Utilisateur";
+    const first = userInfos?.user?.firstName;
+    const last = userInfos?.user?.lastName;
+    if (first && last) {
+      return (first + " " + last).trim();
+    } else {
+      router.push("/login");
+      return;
+    }
   };
 
   return (

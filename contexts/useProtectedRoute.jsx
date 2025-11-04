@@ -16,11 +16,22 @@ export const useProtectedRoute = () => {
       return;
     }
 
-    const matchedPath = Object.keys(accessMap).find((key) =>
-      pathname.startsWith(key)
-    );
+    const matchedPath = Object.keys(accessMap)
+      .filter(
+        (key) => pathname === key || pathname.startsWith(`${key}/`)
+      )
+      .reduce(
+        (longest, key) => (key.length > longest.length ? key : longest),
+        ""
+      );
 
-    const allowedRoles = matchedPath ? accessMap[matchedPath] : [];
+    if (!matchedPath) {
+      clearUser();
+      router.replace("/");
+      return;
+    }
+
+    const allowedRoles = accessMap[matchedPath] || [];
     const isAllowed = userInfos.user.roles.some((r) =>
       allowedRoles.includes(r.roleId)
     );

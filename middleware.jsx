@@ -43,7 +43,11 @@ export async function middleware(req) {
   }
 
   if (isAuthenticated && authRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL("/admin", req.url));
+    const hasAdminAccess = userRoles.some((r) =>
+      accessMap["/admin"]?.includes(r.roleId)
+    );
+
+    return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
   }
 
   const matchedPath = Object.keys(accessMap)
@@ -59,7 +63,7 @@ export async function middleware(req) {
         accessMap["/admin"]?.includes(r.roleId)
       );
 
-      return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/login", req.url));
+      return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
     }
   }
 

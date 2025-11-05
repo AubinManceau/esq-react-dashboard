@@ -46,11 +46,12 @@ export async function middleware(req) {
     const hasAdminAccess = userRoles.some((r) =>
       accessMap["/admin"]?.includes(r.roleId)
     );
-    if (!hasAdminAccess) {
-      cookies.delete("token");
+
+    if (hasAdminAccess) {
+      return NextResponse.redirect(new URL("/admin", req.url));
     }
 
-    return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
+    return NextResponse.next();
   }
 
   const matchedPath = Object.keys(accessMap)
@@ -65,9 +66,6 @@ export async function middleware(req) {
       const hasAdminAccess = userRoles.some((r) =>
         accessMap["/admin"]?.includes(r.roleId)
       );
-      if (!hasAdminAccess) {
-        cookies.delete("token");
-      }
 
       return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
     }

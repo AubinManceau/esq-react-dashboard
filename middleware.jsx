@@ -50,7 +50,7 @@ export async function middleware(req) {
       cookies.delete("token");
     }
 
-    return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/login", req.url));
+    return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
   }
 
   const matchedPath = Object.keys(accessMap)
@@ -69,7 +69,7 @@ export async function middleware(req) {
         cookies.delete("token");
       }
 
-      return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/login", req.url));
+      return NextResponse.redirect(new URL(hasAdminAccess ? "/admin" : "/", req.url));
     }
   }
 

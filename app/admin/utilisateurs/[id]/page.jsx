@@ -5,10 +5,8 @@ import UserPhotos from "@/components/adminCards/UserPhotos";
 import UserForm from "@/components/UserForm";
 import DeactivateOrResend from "@/components/DeactivateOrResend";
 import { getUserById } from "@/lib/user";
-import { useProtectedRoute } from "@/contexts/useProtectedRoute";
 
 export default function DetailsUtilisateur({ params }) {
-    useProtectedRoute();
     const { id } = use(params);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");

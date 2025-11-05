@@ -11,10 +11,8 @@ import Loader from "@/components/Loader";
 import rolesList from "@/lib/roles";
 import categoriesList from "@/lib/categories";
 import CustomAlert from "@/components/CustomAlert";
-import { useProtectedRoute } from "@/contexts/useProtectedRoute";
 
 export default function Utilisateurs() {
-  useProtectedRoute();
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");

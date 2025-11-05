@@ -1,9 +1,4 @@
-"use client";
-import { useProtectedRoute } from "@/contexts/useProtectedRoute";
-
-export default function Convocations() {
-    useProtectedRoute();
-    
+export default function Convocations() {   
     return (
         <div className="admin-convocations">
             <div className="flex items-center lg:justify-between mb-6">

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import CustomAlert from "@/components/CustomAlert";
 import { deleteTeam, createTeam, getTeams, updateTeam } from "@/lib/team";
 import { getUsers } from "@/lib/user";
+import CoachSelect from "./CoachSelect";
 
 export default function TeamCrud() {
     const [teamToEdit, setTeamToEdit] = useState(null);
@@ -55,7 +56,7 @@ export default function TeamCrud() {
                     setUsers(data.data);
                 }
             } catch (error) {
-                setError("Une erreur est survenue lors du chargement des utilisateurs.");
+                setError("Une erreur est survenue lors du chargement des coachs.");
             }
         };
         fetchCoachesByCategory();
@@ -95,7 +96,7 @@ export default function TeamCrud() {
 
         const payload = {
             name: teamName,
-            division: division,
+            division,
             categoryId: activeCategory,
             userCoachIds: coachs,
         };
@@ -106,43 +107,40 @@ export default function TeamCrud() {
                 res = await updateTeam(teamToEdit.id, payload);
                 if (res?.status === "success" && res.data) {
                     setCategories(prev =>
-                        prev.map(cat => {
-                            if (cat.id === activeCategory) {
-                                return {
-                                    ...cat,
-                                    Teams: cat.Teams.map(team =>
-                                        team.id === teamToEdit.id ? res.data : team
-                                    ),
-                                };
+                    prev.map(cat =>
+                        cat.id === activeCategory
+                        ? {
+                            ...cat,
+                            Teams: cat.Teams.map(team =>
+                                team.id === teamToEdit.id ? res.data : team
+                            ),
                             }
-                            return cat;
-                        })
+                        : cat
+                    )
                     );
                 }
             } else {
                 res = await createTeam(payload);
                 if (res?.status === "success" && res.data) {
                     setCategories(prev =>
-                        prev.map(cat => {
-                            if (cat.id === activeCategory) {
-                                return {
-                                    ...cat,
-                                    Teams: [...cat.Teams, res.data],
-                                };
+                    prev.map(cat =>
+                        cat.id === activeCategory
+                        ? {
+                            ...cat,
+                            Teams: [...(cat.Teams || []), res.data],
                             }
-                            return cat;
-                        })
+                        : cat
+                    )
                     );
                 }
             }
 
             if (res?.status === "success") {
+                const refreshed = await getTeams();
+                const sorted = [...refreshed].sort((a, b) => a.id - b.id);
+                setCategories(sorted);
                 setTeamModalOpen(false);
-                setTeamToEdit(null);
-                setTeamName("");
-                setDivision("");
-                setCoachs([]);
-                setActiveCategory(null);
+                resetForm();
             } else {
                 setError("Une erreur est survenue lors de l’enregistrement.");
             }
@@ -151,10 +149,17 @@ export default function TeamCrud() {
         }
     };
 
+    const resetForm = () => {
+        setTeamModalOpen(false);
+        setTeamToEdit(null);
+        setTeamName("");
+        setDivision("");
+        setCoachs([]);
+        setActiveCategory(null);
+    };
 
     const cancelCreate = () => {
-        setTeamModalOpen(false);
-        setActiveCategory(null);
+        resetForm();
     };
 
     const capitalize = (s = "") => s.charAt(0).toUpperCase() + s.slice(1);
@@ -223,7 +228,7 @@ export default function TeamCrud() {
                                                     </div>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent>
-                                                    <DropdownMenuItem onClick={() => { setTeamModalOpen(true); setTeamToEdit(team); setTeamName(team.name); setDivision(team.division); setCoachs(team.Coachs); setActiveCategory(category.id); }}>Modifier</DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => { setTeamModalOpen(true); setTeamToEdit(team); setTeamName(team.name); setDivision(team.division); setCoachs(team.Users?.map(u => u.id) || []); setActiveCategory(category.id); }}>Modifier</DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => { setDeleteModalOpen(true); setTeamToDelete(team.id); }}>Supprimer</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -247,7 +252,7 @@ export default function TeamCrud() {
                 >
                     <h2>Confirmer la suppression</h2>
                     <p className="mb-10">
-                        Êtes-vous bien sûr de vouloir supprimer cet utilisateur ?
+                        Êtes-vous bien sûr de vouloir supprimer cette équipe ?
                     </p>
                     <div className="flex justify-end gap-4">
                         <button
@@ -269,31 +274,30 @@ export default function TeamCrud() {
                 onClick={cancelCreate}
             >
                 <div
-                    className="bg-white rounded-lg py-6 px-12 max-w-xl"
+                    className="bg-white rounded-lg py-6 px-12 max-w-[600px] w-full"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <h2>Ajouter une équipe</h2>
-                    <div className="mb-10 flex flex-col">
+                    <h2>{teamToEdit ? "Modifier" : "Ajouter"} une équipe</h2>
+                    <div className="my-10 flex flex-col">
                         <input
+                            className="px-4 py-2 border border-black rounded-md"
                             type="text"
                             placeholder="Nom de l'équipe"
-                            className="input"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
                         />
                         <input
+                            className="px-4 py-2 border border-black rounded-md mt-4"
                             type="text"
                             placeholder="Division"
-                            className="input mt-4"
                             value={division}
                             onChange={(e) => setDivision(e.target.value)}
                         />
-                        <select className="input mt-4" value={coachs} onChange={(e) => setCoachs(Array.from(e.target.selectedOptions, option => option.value))} multiple>
-                            <option value="" disabled>Coachs</option>
-                            {users.map((user) => (
-                                <option key={`user-${user.id}`} value={user.id}>{user.firstName} {user.lastName}</option>
-                            ))}
-                        </select>
+                        <CoachSelect
+                            users={users}
+                            coachs={coachs}
+                            setCoachs={setCoachs}
+                        />
                     </div>
                     <div className="flex justify-end gap-4">
                         <button
@@ -303,7 +307,7 @@ export default function TeamCrud() {
                             Annuler
                         </button>
                         <button className="btn" onClick={handleSubmit}>
-                            Créer
+                            {teamToEdit ? "Modifier" : "Créer"}
                         </button>
                     </div>
                 </div>

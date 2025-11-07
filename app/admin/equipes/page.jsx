@@ -1,4 +1,5 @@
 import TeamCrud from "@/components/TeamCrud";
+
 export default function Equipes() {
     return (        
         <div className="admin-teams">
@@ -7,7 +8,6 @@ export default function Equipes() {
                     <h1 className="text-orange max-lg:hidden !font-default-bold">Équipes</h1>
                 </div>
             </div>
-
             <TeamCrud />
         </div>
     );
